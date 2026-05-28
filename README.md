@@ -4,10 +4,10 @@ Interactive web onboarding mockup for [Tanka](https://tanka.ai), with two parall
 
 | | Live URL | What it shows |
 |---|---|---|
-| **Main flow** | `<pages-url>/main/` | New user signing up without any invitations |
-| **Invited user** | `<pages-url>/invited/` | User arriving via an invite link (3 mock invitations pre-populated) |
+| **Main flow** | [cirlehan.github.io/tanka-onboarding-demo/main/](https://cirlehan.github.io/tanka-onboarding-demo/main/) | New user signing up without any invitations |
+| **Invited user** | [cirlehan.github.io/tanka-onboarding-demo/invited/](https://cirlehan.github.io/tanka-onboarding-demo/invited/) | User arriving via an invite link (3 mock invitations pre-populated) |
 
-Landing page at `<pages-url>/` lets you pick between them.
+Landing page at [cirlehan.github.io/tanka-onboarding-demo/](https://cirlehan.github.io/tanka-onboarding-demo/) lets you pick between them.
 
 > Both builds share the same code — only the initial state differs (3 lines of difference).
 
@@ -34,7 +34,7 @@ After pushing to GitHub:
 1. **Settings → Pages**
 2. **Source**: Deploy from a branch
 3. **Branch**: `main` / **Folder**: `/ (root)`
-4. **Save** — live in ~30 seconds at `https://<user>.github.io/tanka-onboarding-demo/`
+4. **Save** — live in ~30 seconds at https://cirlehan.github.io/tanka-onboarding-demo/
 
 No build step. No dependencies. Pure static HTML.
 
