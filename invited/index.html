@@ -397,32 +397,30 @@
   .qr-link-btn {
     background: transparent;
     border: none;
-    color: var(--muted);
-    font-size: 13px;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
     font-family: inherit;
     cursor: pointer;
     padding: 6px 4px;
     display: inline-flex; align-items: center;
-    gap: 6px;
+    gap: 8px;
     transition: color .15s;
-    position: relative;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    text-decoration-color: rgba(10,15,31,0.35);
   }
-  .qr-link-btn::after {
-    content: "";
-    position: absolute;
-    left: 22px; right: 0; bottom: 4px;
-    height: 1px;
-    background: currentColor;
-    opacity: 0;
-    transition: opacity .15s;
+  .qr-link-btn:hover {
+    color: var(--accent-blue);
+    text-decoration-color: var(--accent-blue);
   }
-  .qr-link-btn:hover { color: var(--ink); }
-  .qr-link-btn:hover::after { opacity: 0.5; }
   .qr-link-btn svg {
-    opacity: 0.7;
     flex-shrink: 0;
+    color: var(--ink);
+    transition: color .15s;
   }
-  .qr-link-btn:hover svg { opacity: 1; }
+  .qr-link-btn:hover svg { color: var(--accent-blue); }
 
   /* ---------- QR display ---------- */
   .qr-stage {
