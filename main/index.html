@@ -14,6 +14,7 @@
     --muted-2: #9aa3b2;
     --line: #e6e9f0;
     --line-2: #d6dbe5;
+    --divider: rgba(15, 41, 77, 0.05);
     --card: #ffffff;
     --primary: #0a0f1f;
     --primary-hover: #1a2138;
@@ -158,7 +159,7 @@
     font-size: 11.5px;
     color: var(--muted);
     text-align: center;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--divider);
     padding-top: 10px;
     margin-top: 2px;
   }
@@ -204,7 +205,7 @@
   }
   .user-menu-sep {
     height: 1px;
-    background: var(--line);
+    background: var(--divider);
     margin: 4px 6px;
   }
   .user-menu-item {
@@ -360,7 +361,7 @@
     transition: opacity .25s ease, max-height .35s ease, margin .35s ease;
   }
   .or::before, .or::after {
-    content: ""; flex: 1; height: 1px; background: var(--line);
+    content: ""; flex: 1; height: 1px; background: var(--divider);
   }
   .social-row, .qr-link-wrap, .signup-line {
     max-height: 200px;
@@ -820,7 +821,7 @@
     content: "";
     flex: 1;
     height: 1px;
-    background: var(--line);
+    background: var(--divider);
   }
   .or-actions {
     display: grid;
@@ -1027,7 +1028,7 @@
     color: var(--muted);
     padding: 6px 10px 8px;
     display: flex; align-items: center; gap: 6px;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--divider);
     margin-bottom: 4px;
   }
   .jump-tag {
@@ -1062,7 +1063,7 @@
     text-transform: uppercase;
     padding: 10px 10px 4px;
     margin-top: 4px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--divider);
   }
 
   /* ---------- Review notes panel ---------- */
@@ -1107,7 +1108,7 @@
     line-height: 1.55;
     color: var(--ink-2);
     padding: 10px 0;
-    border-bottom: 1px dashed var(--line);
+    border-bottom: 1px dashed var(--divider);
   }
   .notes-panel .note:last-child { border-bottom: none; }
   .notes-panel .note b { color: var(--ink); }
@@ -1209,7 +1210,22 @@
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 12.0908H48V22.6697H0V12.0908Z" fill="#00B9E3"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H34.5V10.5789H0V0Z" fill="#00DF5D"/>
       </svg>
-      <span id="brand-text">TANKA</span>
+      <svg id="brand-text" class="brand-text" width="85" height="18" viewBox="0 0 80 17" fill="none" aria-label="Tanka">
+        <path d="M14.9297 0.435547V2.58496H0.416992V0.435547H14.9297Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.00197 0.21875V16.4356H5.96484V0.21875H9.00197Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
+        <path d="M34.7227 0.208008H31.6855V16.4248H34.7227V0.208008Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
+        <path d="M46.5899 0.208008H43.5527V16.4248H46.5899V0.208008Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
+        <path d="M35.3545 0.424805L45.9326 16.209H42.9375L32.3604 0.424805H35.3545Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path d="M24.334 0.423828L30.6387 16.208H27.877L21.5723 0.423828H24.334Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path d="M21.1426 0.423828L14.8379 16.208H17.5996L23.9043 0.423828H21.1426Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path d="M26.6836 11.5752H18.5312L25.8193 9.02051L26.6836 11.5752Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path d="M73.082 0.439453L79.3857 16.2109H76.623L70.3193 0.439453H73.082Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path d="M69.9434 0.424805L63.6396 16.1963H66.4023L72.7061 0.424805H69.9434Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path d="M75.6953 11.6025H67.5488L74.832 9.05078L75.6953 11.6025Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
+        <path d="M51.8213 0.216797H48.7842V16.4336H51.8213V0.216797Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M55.6699 6.00879L63.8331 16.4348H60.1783L53.1582 7.46831L55.6699 6.00879Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M63.6514 0.216797L52.0321 11.7315L49.75 10.0225L59.644 0.216797H63.6514Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
+      </svg>
     </div>
     <div class="top-right">
       <div class="app-pop-wrap" id="app-pop-wrap">
