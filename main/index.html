@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tanka · Onboarding — Main flow</title>
+<style>
+  :root {
+    --bg-grad-1: #eaf0ff;
+    --bg-grad-2: #d8e3ff;
+    --ink: #0a0f1f;
+    --ink-2: #1d2433;
+    --muted: #6b7280;
+    --muted-2: #9aa3b2;
+    --line: #e6e9f0;
+    --line-2: #d6dbe5;
+    --card: #ffffff;
+    --primary: #0a0f1f;
+    --primary-hover: #1a2138;
+    --disabled: #b8bcc6;
+    --accent-blue: #2e8bff;
+    --accent-green: #20c997;
+    --danger: #e5484d;
+    --shadow-1: 0 1px 2px rgba(10,15,31,0.04);
+    --shadow-2: 0 10px 40px rgba(10,15,31,0.08), 0 2px 6px rgba(10,15,31,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "PingFang SC", "Helvetica Neue", sans-serif;
+    background: linear-gradient(180deg, #f3f6ff 0%, #dde6ff 100%);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* ---------- App shell ---------- */
+  .app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .top-bar {
+    height: 64px;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 18px; letter-spacing: 1.5px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .brand-mark {
+    width: 28px; height: 28px;
+    display: inline-block;
+    position: relative;
+  }
+  .brand-mark .bar {
+    position: absolute; left: 0; right: 0;
+    height: 7px; border-radius: 3px;
+  }
+  .brand-mark .b1 { top: 2px;  width: 22px; background: #28d17c; }
+  .brand-mark .b2 { top: 11px; width: 28px; background: #2e8bff; }
+  .brand-mark .b3 { top: 20px; width: 18px; background: #2e8bff;
+                    border-bottom-left-radius: 3px; border-bottom-right-radius: 7px; }
+
+  .top-right { display: flex; align-items: center; gap: 10px; }
+  .pill {
+    height: 36px; padding: 0 14px;
+    border-radius: 999px;
+    background: #fff; border: 1px solid var(--line);
+    font-size: 13px; color: var(--ink); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .pill:hover { background: #f6f8ff; }
+  .pill:active { transform: scale(0.98); }
+
+  .user-chip-wrap { position: relative; }
+  .user-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 8px 4px 4px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s;
+    user-select: none;
+  }
+  .user-chip:hover { background: rgba(255,255,255,0.7); }
+  .user-chip .chev { transition: transform .2s ease; }
+  .user-chip-wrap.open .user-chip { background: rgba(255,255,255,0.85); }
+  .user-chip-wrap.open .chev { transform: rotate(180deg); }
+
+  /* ---------- Get mobile app popover ---------- */
+  .app-pop-wrap { position: relative; display: inline-block; }
+  .app-pop {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 320px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-2);
+    padding: 16px 18px 14px;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 60;
+    transform-origin: top right;
+  }
+  .app-pop-wrap.open .app-pop {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .app-pop-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .app-pop-sub { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+  .app-pop-qrs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 14px 0 12px;
+  }
+  .app-qr-col { display: flex; flex-direction: column; align-items: center; }
+  .app-qr-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    padding: 4px;
+  }
+  .app-qr-svg {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 8px;
+    filter: drop-shadow(0 2px 8px rgba(10,15,31,0.06));
+    display: block;
+  }
+  .app-qr-center {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: #fff;
+    box-shadow: 0 0 0 3px #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .app-qr-center svg { width: 18px; height: 18px; }
+  .app-qr-label {
+    margin-top: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--ink);
+    font-size: 11px;
+    line-height: 1.25;
+    text-align: left;
+  }
+  .app-qr-label svg { color: var(--ink); flex-shrink: 0; }
+  .app-qr-label b { font-size: 12px; font-weight: 600; }
+  .app-qr-label .t-light { color: var(--muted); font-size: 10px; }
+  .app-pop-foot {
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+    margin-top: 2px;
+  }
+  .app-pop-foot b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- User menu dropdown ---------- */
+  .user-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 240px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--line);
+    padding: 6px;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index: 60;
+    transform-origin: top right;
+  }
+  .user-chip-wrap.open .user-menu {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .user-menu-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px;
+  }
+  .user-menu-info { min-width: 0; flex: 1; }
+  .user-menu-name {
+    font-size: 13px; font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .user-menu-email {
+    font-size: 12px; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 1px;
+  }
+  .user-menu-sep {
+    height: 1px;
+    background: var(--line);
+    margin: 4px 6px;
+  }
+  .user-menu-item {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    border: none;
+    background: transparent;
+    font-size: 13px; color: var(--ink);
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 8px;
+    text-align: left;
+    transition: background .12s, color .12s;
+  }
+  .user-menu-item svg { color: var(--muted); transition: color .12s; }
+  .user-menu-item:hover { background: #f5f7fb; }
+  .user-menu-item:hover svg { color: var(--ink); }
+  .user-menu-item.is-danger { color: var(--danger); }
+  .user-menu-item.is-danger svg { color: var(--danger); }
+  .user-menu-item.is-danger:hover { background: rgba(229,72,77,0.08); }
+  .avatar-sm {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, #ffb24d 0%, #ff7a59 100%);
+    color: #fff; font-weight: 700; font-size: 13px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- Centered stage ---------- */
+  .stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 24px 80px;
+  }
+  .card {
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+  }
+
+  /* Page transitions */
+  .view {
+    display: none;
+    animation: fadeUp .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .view.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo-block {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 28px;
+  }
+  .logo-mark {
+    width: 56px; height: 56px;
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .logo-mark .bar {
+    position: absolute; left: 0; right: 0;
+    height: 14px; border-radius: 5px;
+  }
+  .logo-mark .b1 { top: 4px;  width: 44px; background: #28d17c; }
+  .logo-mark .b2 { top: 22px; width: 56px; background: #2e8bff; }
+  .logo-mark .b3 { top: 40px; width: 36px; background: #2e8bff;
+                   border-bottom-left-radius: 6px; border-bottom-right-radius: 13px; }
+  .title {
+    font-size: 26px; font-weight: 700; letter-spacing: -0.2px;
+    text-align: center;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  /* ---------- Inputs ---------- */
+  .field { margin-top: 18px; }
+  .label {
+    display: block;
+    font-size: 13px; color: var(--muted-2);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .input {
+    width: 100%;
+    height: 48px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 15px; color: var(--ink);
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .input::placeholder { color: #c1c6d1; }
+  .input:hover { border-color: var(--line-2); }
+  .input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 4px rgba(46,139,255,0.12);
+  }
+  .input.is-error {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 4px rgba(229,72,77,0.10);
+  }
+  .help {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .help.error { color: var(--danger); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    width: 100%;
+    height: 50px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 10px;
+    transition: background .15s, transform .08s, color .15s, border-color .15s, opacity .15s;
+    font-family: inherit;
+  }
+  .btn:active { transform: scale(0.985); }
+  .btn-primary {
+    background: var(--primary); color: #fff;
+  }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary:disabled {
+    background: var(--disabled); color: #fff; cursor: not-allowed; opacity: .8;
+  }
+  .btn-primary:disabled:active { transform: none; }
+  .btn-secondary {
+    background: #fff; color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-secondary:hover { background: #f7f9ff; border-color: var(--line-2); }
+  .btn-ghost {
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.6); }
+
+  .btn-row { margin-top: 14px; }
+  .or {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--muted-2);
+    font-size: 12px; letter-spacing: 1px;
+    margin: 18px 0;
+    text-align: center;
+    max-height: 40px;
+    overflow: hidden;
+    transition: opacity .25s ease, max-height .35s ease, margin .35s ease;
+  }
+  .or::before, .or::after {
+    content: ""; flex: 1; height: 1px; background: var(--line);
+  }
+  .social-row, .qr-link-wrap, .signup-line {
+    max-height: 200px;
+    overflow: hidden;
+    transition: opacity .25s ease, max-height .35s ease, margin .35s ease;
+  }
+
+  .social-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .social {
+    height: 48px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px; color: var(--ink); font-weight: 500;
+    font-family: inherit;
+    transition: background .15s, border-color .15s, transform .08s;
+  }
+  .social:hover { background: #f7f9ff; border-color: var(--line-2); }
+  .social:active { transform: scale(0.985); }
+  .social svg { width: 18px; height: 18px; }
+
+  /* ---------- QR link button (lightweight entry) ---------- */
+  .qr-link-wrap {
+    margin-top: 18px;
+    text-align: center;
+  }
+  .qr-link-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 6px 4px;
+    display: inline-flex; align-items: center;
+    gap: 6px;
+    transition: color .15s;
+    position: relative;
+  }
+  .qr-link-btn::after {
+    content: "";
+    position: absolute;
+    left: 22px; right: 0; bottom: 4px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .qr-link-btn:hover { color: var(--ink); }
+  .qr-link-btn:hover::after { opacity: 0.5; }
+  .qr-link-btn svg {
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  .qr-link-btn:hover svg { opacity: 1; }
+
+  /* ---------- QR display ---------- */
+  .qr-stage {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 8px 0 4px;
+    position: relative;
+  }
+  .qr-frame {
+    position: relative;
+    width: 200px; height: 200px;
+    padding: 14px;
+  }
+  /* viewfinder corner brackets in brand color */
+  .qr-frame::before,
+  .qr-frame::after,
+  .qr-frame > .corner-tl,
+  .qr-frame > .corner-br {
+    content: "";
+    position: absolute;
+    width: 22px; height: 22px;
+    border: 2.5px solid var(--accent-blue);
+    border-radius: 4px;
+  }
+  .qr-frame::before { /* top-left */
+    top: 0; left: 0;
+    border-right: none; border-bottom: none;
+    border-top-left-radius: 8px;
+    border-color: #28d17c;
+  }
+  .qr-frame::after { /* top-right */
+    top: 0; right: 0;
+    border-left: none; border-bottom: none;
+    border-top-right-radius: 8px;
+    border-color: #28d17c;
+  }
+  .qr-frame > .corner-tl { /* bottom-left */
+    bottom: 0; left: 0; top: auto;
+    border-right: none; border-top: none;
+    border-bottom-left-radius: 8px;
+  }
+  .qr-frame > .corner-br { /* bottom-right */
+    bottom: 0; right: 0; top: auto;
+    border-left: none; border-top: none;
+    border-bottom-right-radius: 8px;
+  }
+  .qr-svg {
+    width: 100%; height: 100%;
+    display: block;
+    background: #fff;
+    border-radius: 14px;
+    filter: drop-shadow(0 6px 20px rgba(10,15,31,0.10));
+  }
+  .qr-logo {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 0 4px #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .qr-logo .lm {
+    position: relative;
+    width: 26px; height: 26px;
+  }
+  .qr-logo .lm .bar {
+    position: absolute; left: 0; right: 0;
+    height: 6px; border-radius: 2px;
+  }
+  .qr-logo .lm .b1 { top: 1px;  width: 20px; background: #28d17c; }
+  .qr-logo .lm .b2 { top: 10px; width: 26px; background: #2e8bff; }
+  .qr-logo .lm .b3 { top: 19px; width: 17px; background: #2e8bff;
+                     border-bottom-left-radius: 3px; border-bottom-right-radius: 6px; }
+
+  /* scan line animation */
+  .qr-scan {
+    position: absolute;
+    left: 18px; right: 18px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #2e8bff, transparent);
+    border-radius: 2px;
+    opacity: 0.7;
+    top: 18px;
+    animation: scan 2.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes scan {
+    0%, 100% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    50% { transform: translateY(160px); opacity: 0.8; }
+    90% { opacity: 0.8; }
+  }
+  .qr-tip {
+    margin-top: 22px;
+    font-size: 13px; color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .qr-tip b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Code input ---------- */
+  .code-row {
+    display: flex; justify-content: center; gap: 10px;
+    margin: 20px 0 8px;
+  }
+  .code {
+    width: 52px; height: 60px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    text-align: center;
+    font-size: 24px; font-weight: 600;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, transform .1s;
+    font-family: inherit;
+    caret-color: var(--accent-blue);
+  }
+  .code:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 4px rgba(46,139,255,0.12);
+  }
+  .code.filled { border-color: var(--ink); }
+  .code.is-error {
+    border-color: var(--danger);
+    animation: shake .35s;
+  }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+  .resend-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px;
+    margin-top: 4px;
+    color: var(--muted);
+  }
+  .resend-row .link { color: var(--accent-blue); cursor: pointer; font-weight: 500; }
+  .resend-row .link[aria-disabled="true"] { color: var(--muted-2); cursor: not-allowed; }
+
+  /* ---------- Back link ---------- */
+  .back {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--ink);
+    background: none; border: none; cursor: pointer;
+    font-size: 14px; font-family: inherit;
+    padding: 8px 12px; border-radius: 8px;
+    margin: 0 0 12px -12px;
+  }
+  .back:hover { background: rgba(255,255,255,0.6); }
+
+  /* ---------- Profile ---------- */
+  .avatar-stage {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 8px 0 28px;
+  }
+  .avatar-big {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb24d 0%, #ff7a59 100%);
+    color: #fff; font-weight: 700; font-size: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: visible;
+  }
+  .avatar-big img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+  }
+  .avatar-edit {
+    position: absolute;
+    right: -2px; bottom: -2px;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    transition: transform .1s;
+  }
+  .avatar-edit:hover { transform: scale(1.05); }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* ---------- Team avatar (square rounded) ---------- */
+  .team-avatar-stage {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 4px 0 22px;
+  }
+  .team-avatar {
+    width: 88px; height: 88px;
+    border-radius: 22px;
+    background: #e8eeff;
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: visible;
+    color: #fff;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -0.5px;
+  }
+  .team-avatar img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 22px;
+  }
+  .team-avatar.has-name {
+    background: linear-gradient(135deg, #2e8bff 0%, #28d17c 100%);
+  }
+  .team-avatar.has-name #team-avatar-icon { display: none; }
+
+  /* ---------- Tab panes (grid stack — no layout shift) ---------- */
+  .tab-panes {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .tab-pane {
+    grid-row: 1;
+    grid-column: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+  }
+  .tab-pane.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ---------- Tabs (Invite code / Community) ---------- */
+  .tabs-wrap { display: flex; justify-content: center; margin-bottom: 18px; }
+  .tabs {
+    display: inline-flex;
+    padding: 4px;
+    background: #eef1f7;
+    border-radius: 999px;
+    width: 100%;
+    max-width: 320px;
+  }
+  .tab {
+    flex: 1;
+    height: 36px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    transition: background .2s, color .2s, box-shadow .2s;
+    border: none; background: transparent; font-family: inherit;
+  }
+  .tab.active {
+    background: var(--ink);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(10,15,31,0.2);
+  }
+
+  /* ---------- Team list (Community) ---------- */
+  .team-list {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .team-row {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .team-row:hover { border-color: var(--line-2); box-shadow: 0 4px 14px rgba(10,15,31,0.04); }
+  .t-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .t-body { flex: 1; min-width: 0; }
+  .t-title {
+    font-size: 14px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .t-title svg { color: var(--muted); }
+  .t-sub {
+    font-size: 12px; color: var(--muted);
+    margin-top: 2px;
+  }
+  .t-sub .dot {
+    display: inline-block;
+    width: 3px; height: 3px;
+    background: #cdd3e0;
+    border-radius: 50%;
+    margin: 0 6px;
+    vertical-align: middle;
+  }
+  .btn-team {
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    border: 1px solid var(--line);
+    background: #fff; color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, border-color .15s;
+    flex-shrink: 0;
+  }
+  .btn-team:hover { background: #f7f9ff; border-color: var(--line-2); }
+  .btn-team.is-apply {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line-2);
+  }
+  .btn-team.is-apply:hover { background: rgba(46,139,255,0.06); border-color: var(--accent-blue); color: var(--accent-blue); }
+
+  /* ---------- Invitation cards (compact single-row) ---------- */
+  .invite-list {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 4px;
+  }
+  .invite-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+    transition: opacity .25s ease, transform .25s ease, max-height .3s ease, margin .3s ease, padding .3s ease, border-color .15s, box-shadow .15s;
+    overflow: hidden;
+    max-height: 120px;
+  }
+  .invite-card:hover {
+    border-color: var(--line-2);
+    box-shadow: 0 4px 14px rgba(10,15,31,0.04);
+  }
+  .invite-card.is-leaving {
+    opacity: 0;
+    transform: translateX(-16px);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: -10px;
+    border-color: transparent;
+  }
+  .invite-card .t-sub { font-size: 12.5px; }
+  .invite-card .t-attr {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .invite-card .t-attr .by-avatar {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb24d 0%, #ff7a59 100%);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .invite-card .t-attr b { color: var(--ink); font-weight: 600; }
+  .invite-actions {
+    display: flex; align-items: center; gap: 6px;
+    flex-shrink: 0;
+  }
+  .btn-decline {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color .15s, background .15s;
+  }
+  .btn-decline:hover { color: var(--ink); background: #f1f5fb; }
+  .btn-accept {
+    height: 34px; padding: 0 18px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, transform .08s;
+  }
+  .btn-accept:hover { background: var(--primary-hover); }
+  .btn-accept:active { transform: scale(0.97); }
+
+  /* "Or start on your own" footer */
+  .or-on-own {
+    display: flex; align-items: center; gap: 12px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin: 20px 0 12px;
+  }
+  .or-on-own::before,
+  .or-on-own::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .or-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .or-action {
+    height: 52px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color .15s, background .15s, transform .08s;
+  }
+  .or-action:hover { border-color: var(--accent-blue); background: #f7faff; }
+  .or-action:active { transform: scale(0.99); }
+  .or-action svg { color: var(--muted); }
+  .or-action:hover svg { color: var(--accent-blue); }
+
+  /* Empty state (all invites resolved) */
+  .invite-empty {
+    text-align: center;
+    padding: 24px 12px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ---------- Team card (Apply view) ---------- */
+  .team-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  /* ---------- Textarea ---------- */
+  .input.textarea {
+    height: auto;
+    padding: 12px 14px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+  }
+
+  /* ---------- Info banner ---------- */
+  .info-banner {
+    margin-top: 14px;
+    background: #eef4ff;
+    border: 1px solid #d8e4ff;
+    color: #1f5cc4;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .info-banner svg { flex-shrink: 0; margin-top: 2px; }
+
+  /* ---------- Choice cards ---------- */
+  .choice {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    transition: border-color .15s, transform .1s, box-shadow .2s;
+    margin-bottom: 12px;
+  }
+  .choice:hover {
+    border-color: var(--accent-blue);
+    box-shadow: 0 6px 24px rgba(46,139,255,0.10);
+  }
+  .choice:active { transform: scale(0.99); }
+  .choice-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: #f3f5fb;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .choice-body { flex: 1; }
+  .choice-title { font-size: 15px; font-weight: 600; }
+  .choice-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .choice-chev { color: var(--muted-2); }
+
+  /* ---------- Step indicator ---------- */
+  .steps {
+    display: flex; justify-content: center; gap: 6px;
+    margin-bottom: 8px;
+  }
+  .steps .dot {
+    width: 22px; height: 4px;
+    border-radius: 2px;
+    background: rgba(10,15,31,0.12);
+    transition: background .25s, width .25s;
+  }
+  .steps .dot.done { background: var(--ink); }
+  .steps .dot.active { background: var(--ink); width: 32px; }
+
+  /* ---------- Tags / chips for invite ---------- */
+  .tag-input-wrap {
+    min-height: 48px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 10px;
+    background: #fff;
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  }
+  .tag-input-wrap:focus-within {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 4px rgba(46,139,255,0.12);
+  }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #f1f5fb;
+    border-radius: 999px;
+    padding: 4px 8px 4px 10px;
+    font-size: 13px;
+  }
+  .tag .x {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1;
+  }
+  .tag-input-wrap input {
+    flex: 1; min-width: 100px;
+    border: none; outline: none;
+    height: 32px; font-size: 14px;
+    background: transparent;
+    font-family: inherit;
+  }
+
+  /* ---------- Success ---------- */
+  .success-mark {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #28d17c, #2e8bff);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(46,139,255,0.25);
+  }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed;
+    top: 24px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Jump menu (demo helper) ---------- */
+  .jump-fab {
+    position: fixed;
+    right: 20px; bottom: 76px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(10,15,31,0.10);
+    display: inline-flex; align-items: center; justify-content: center;
+    z-index: 50;
+    font-family: inherit;
+    transition: transform .15s, background .15s;
+  }
+  .jump-fab:hover { transform: scale(1.05); background: #f7f9ff; }
+  .jump-panel {
+    position: fixed;
+    right: 76px; bottom: 76px;
+    width: 240px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: var(--shadow-2);
+    border: 1px solid var(--line);
+    padding: 10px;
+    z-index: 50;
+    transform: translateX(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+  }
+  .jump-panel.open { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .jump-title {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 6px 10px 8px;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+  }
+  .jump-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: #fff4e5;
+    color: #a55a00;
+    font-weight: 600;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+  }
+  .jump-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .12s;
+  }
+  .jump-item:hover { background: #f1f5fb; }
+  .jump-sep {
+    font-size: 10px;
+    color: var(--muted-2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 10px 4px;
+    margin-top: 4px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---------- Review notes panel ---------- */
+  .notes-fab {
+    position: fixed;
+    right: 20px; bottom: 20px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(10,15,31,0.2);
+    display: inline-flex; align-items: center; justify-content: center;
+    z-index: 50;
+    font-family: inherit;
+    transition: transform .15s;
+  }
+  .notes-fab:hover { transform: scale(1.05); }
+
+  .notes-panel {
+    position: fixed;
+    right: 20px; bottom: 76px;
+    width: 380px;
+    max-height: 70vh;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: var(--shadow-2);
+    padding: 18px 20px 20px;
+    overflow-y: auto;
+    z-index: 50;
+    transform: translateY(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    border: 1px solid var(--line);
+  }
+  .notes-panel.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .notes-panel h3 { font-size: 14px; margin-bottom: 8px; }
+  .notes-panel .note {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .notes-panel .note:last-child { border-bottom: none; }
+  .notes-panel .note b { color: var(--ink); }
+  .notes-panel .tag-pill {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #eaf3ff;
+    color: #1f6feb;
+    margin-right: 6px;
+    font-weight: 600;
+    letter-spacing: .3px;
+  }
+  .notes-panel .tag-pill.fix { background: #eafff3; color: #0a8a4a; }
+  .notes-panel .tag-pill.add { background: #fff4e5; color: #a55a00; }
+
+  /* ---------- Reset / footer ---------- */
+  .reset-row {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .reset-row a { color: var(--accent-blue); cursor: pointer; }
+
+  .terms {
+    text-align: center; font-size: 12px;
+    color: var(--muted);
+    margin-top: 18px;
+  }
+  .terms a { color: var(--ink); cursor: pointer; text-decoration: underline; }
+
+  .signup-line {
+    text-align: center; font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .signup-line a { color: var(--ink); font-weight: 600; cursor: pointer; }
+
+  /* ---------- Sign-up mode: focus on form, hide path-choosers ---------- */
+  .logo-mark {
+    transition: opacity .25s ease, max-height .35s ease, margin-bottom .35s ease, transform .35s ease;
+    max-height: 56px;
+    overflow: hidden;
+    transform-origin: center bottom;
+  }
+  /* Collapsible side-paths */
+  .collapsible {
+    transition: opacity .25s ease, max-height .35s ease, margin .35s ease;
+    overflow: hidden;
+  }
+
+  #view-welcome.is-signup .logo-mark {
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    transform: scale(0.6);
+  }
+  #view-welcome.is-signup .or,
+  #view-welcome.is-signup .social-row,
+  #view-welcome.is-signup .qr-link-wrap,
+  #view-welcome.is-signup .signup-line {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  /* Top "Back to sign in" — visible only in signup mode */
+  .back-to-signin {
+    display: none;
+    margin: 0 0 4px -8px;
+  }
+  #view-welcome.is-signup .back-to-signin {
+    display: inline-flex;
+    animation: fadeUp .3s ease;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 540px) {
+    .card { max-width: 100%; }
+    .code { width: 42px; height: 54px; font-size: 22px; }
+    .top-bar { padding: 0 16px; }
+    .notes-panel { width: calc(100% - 32px); right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <div class="brand" onclick="goto('welcome')">
+      <span class="brand-mark">
+        <span class="bar b1"></span>
+        <span class="bar b2"></span>
+        <span class="bar b3"></span>
+      </span>
+      <span id="brand-text">TANKA</span>
+    </div>
+    <div class="top-right">
+      <div class="app-pop-wrap" id="app-pop-wrap">
+        <button class="pill" id="mobile-app-btn" title="Get mobile app">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>
+          Get mobile app
+        </button>
+        <div class="app-pop" id="app-pop">
+          <div class="app-pop-title">Get Tanka on your phone</div>
+          <div class="app-pop-sub">Scan with your phone camera, or visit the link below</div>
+          <div class="app-pop-qrs">
+            <div class="app-qr-col">
+              <div class="app-qr-frame">
+                <svg id="qr-ios" class="app-qr-svg" viewBox="-2 -2 33 33" shape-rendering="crispEdges"></svg>
+                <div class="app-qr-center">
+                  <svg viewBox="0 0 24 24" fill="#0a0f1f"><path d="M16.365 1.43c0 1.14-.42 2.22-1.13 3.03-.78.9-2.05 1.59-3.07 1.5-.12-1.1.39-2.25 1.06-3 .76-.85 2.07-1.49 3.14-1.53zM20.5 17.34c-.55 1.26-.82 1.82-1.52 2.95-.99 1.58-2.38 3.55-4.11 3.56-1.53.02-1.93-1-4-1-2.07.01-2.5 1.02-4.03 1-1.73-.02-3.05-1.81-4.04-3.4C.66 16.06-.07 10.4 3.05 7.65 4.15 6.71 5.39 6.13 6.69 6.1c1.51-.04 2.93 1.02 3.85 1.02.92 0 2.65-1.26 4.47-1.07.76.03 2.9.31 4.27 2.31-3.78 2.07-3.18 7.45 1.22 8.98z"/></svg>
+                </div>
+              </div>
+              <div class="app-qr-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.42 2.22-1.13 3.03-.78.9-2.05 1.59-3.07 1.5-.12-1.1.39-2.25 1.06-3 .76-.85 2.07-1.49 3.14-1.53zM20.5 17.34c-.55 1.26-.82 1.82-1.52 2.95-.99 1.58-2.38 3.55-4.11 3.56-1.53.02-1.93-1-4-1-2.07.01-2.5 1.02-4.03 1-1.73-.02-3.05-1.81-4.04-3.4C.66 16.06-.07 10.4 3.05 7.65 4.15 6.71 5.39 6.13 6.69 6.1c1.51-.04 2.93 1.02 3.85 1.02.92 0 2.65-1.26 4.47-1.07.76.03 2.9.31 4.27 2.31-3.78 2.07-3.18 7.45 1.22 8.98z"/></svg>
+                <span><span class="t-light">Download on the</span><br><b>App Store</b></span>
+              </div>
+            </div>
+            <div class="app-qr-col">
+              <div class="app-qr-frame">
+                <svg id="qr-android" class="app-qr-svg" viewBox="-2 -2 33 33" shape-rendering="crispEdges"></svg>
+                <div class="app-qr-center">
+                  <svg viewBox="0 0 24 24"><path fill="#34A853" d="M3 20.5v-17a1 1 0 0 1 1.5-.87L19 11.13a1 1 0 0 1 0 1.74L4.5 21.37A1 1 0 0 1 3 20.5z"/><path fill="#FBBC04" d="M14.5 8.43L19 11.13a1 1 0 0 1 0 1.74l-4.5 2.7L11.4 12z"/><path fill="#EA4335" d="M4.5 2.63L14.5 8.43 11.4 12z" opacity=".9"/><path fill="#4285F4" d="M4.5 21.37L14.5 15.57 11.4 12z" opacity=".9"/></svg>
+                </div>
+              </div>
+              <div class="app-qr-label">
+                <svg width="13" height="13" viewBox="0 0 24 24"><path fill="currentColor" d="M3 20.5v-17a1 1 0 0 1 1.5-.87L19 11.13a1 1 0 0 1 0 1.74L4.5 21.37A1 1 0 0 1 3 20.5z"/></svg>
+                <span><span class="t-light">Get it on</span><br><b>Google Play</b></span>
+              </div>
+            </div>
+          </div>
+          <div class="app-pop-foot">
+            Or visit <b>tanka.ai/app</b> on your phone
+          </div>
+        </div>
+      </div>
+      <div class="user-chip-wrap" id="user-chip-wrap" style="display:none;">
+        <div class="user-chip" id="user-chip">
+          <span class="avatar-sm" id="user-avatar">H</span>
+          <span id="user-name" style="font-size:14px;font-weight:500;">Han</span>
+          <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="user-menu" id="user-menu">
+          <div class="user-menu-header">
+            <span class="avatar-sm" id="user-menu-avatar">H</span>
+            <div class="user-menu-info">
+              <div class="user-menu-name" id="user-menu-name">Han</div>
+              <div class="user-menu-email" id="user-menu-email">you@tanka.ai</div>
+            </div>
+          </div>
+          <div class="user-menu-sep"></div>
+          <button class="user-menu-item" onclick="toast('Account settings coming soon')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 0 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+            Account settings
+          </button>
+          <button class="user-menu-item" onclick="toast('Help center coming soon')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Help &amp; support
+          </button>
+          <div class="user-menu-sep"></div>
+          <button class="user-menu-item is-danger" id="signout-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage -->
+  <div class="stage">
+    <div class="card">
+
+      <!-- ============ Step 1: Welcome ============ -->
+      <div class="view active" id="view-welcome">
+        <button class="back back-to-signin" onclick="setMode('signin')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to sign in
+        </button>
+        <div class="logo-block">
+          <div class="logo-mark">
+            <span class="bar b1"></span>
+            <span class="bar b2"></span>
+            <span class="bar b3"></span>
+          </div>
+          <div class="title" id="welcome-title">Welcome to Tanka</div>
+          <div class="subtitle" id="welcome-sub">Sign in to continue.</div>
+        </div>
+
+        <div class="field" style="margin-top:6px;">
+          <label class="label" for="email">E-mail</label>
+          <input
+            type="email"
+            id="email"
+            class="input"
+            placeholder="you@company.com"
+            autocomplete="email"
+            spellcheck="false"
+          />
+          <div class="help" id="email-help"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="continue-btn" disabled><span id="continue-label">Continue</span></button>
+        </div>
+
+        <div class="or">OR</div>
+
+        <div class="social-row">
+          <button class="social" onclick="fakeOauth('Apple')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.42 2.22-1.13 3.03-.78.9-2.05 1.59-3.07 1.5-.12-1.1.39-2.25 1.06-3 .76-.85 2.07-1.49 3.14-1.53zM20.5 17.34c-.55 1.26-.82 1.82-1.52 2.95-.99 1.58-2.38 3.55-4.11 3.56-1.53.02-1.93-1-4-1-2.07.01-2.5 1.02-4.03 1-1.73-.02-3.05-1.81-4.04-3.4C.66 16.06-.07 10.4 3.05 7.65 4.15 6.71 5.39 6.13 6.69 6.1c1.51-.04 2.93 1.02 3.85 1.02.92 0 2.65-1.26 4.47-1.07.76.03 2.9.31 4.27 2.31-3.78 2.07-3.18 7.45 1.22 8.98z"/></svg>
+            Apple
+          </button>
+          <button class="social" onclick="fakeOauth('Google')">
+            <svg viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.69 14.97.5 12 .5 7.7.5 3.99 2.97 2.18 6.61l3.66 2.84C6.71 6.86 9.14 5 12 5z"/><path fill="#4285F4" d="M23.5 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.28 1.5-1.14 2.77-2.42 3.62l3.71 2.88c2.17-2 3.74-4.95 3.74-8.74z"/><path fill="#FBBC05" d="M5.84 14.45a7.18 7.18 0 0 1 0-4.45L2.18 7.16A11.5 11.5 0 0 0 .5 12c0 1.84.44 3.58 1.18 5.11l4.16-2.66z"/><path fill="#34A853" d="M12 23.5c3.24 0 5.96-1.07 7.94-2.91l-3.71-2.88c-1.03.69-2.36 1.1-4.23 1.1-2.85 0-5.27-1.85-6.13-4.41l-4.16 2.66C3.99 21.03 7.7 23.5 12 23.5z"/></svg>
+            Google
+          </button>
+        </div>
+
+        <div class="qr-link-wrap">
+          <button class="qr-link-btn" onclick="goto('qr')" aria-label="Sign in with QR code">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M17 17v4"/></svg>
+            Sign in with QR code
+          </button>
+        </div>
+
+        <div class="terms">
+          By continuing, you agree to our <a>Terms</a> and <a>Privacy Policy</a>.
+        </div>
+
+        <div class="signup-line" id="signup-line">
+          <span id="signup-prompt">Don’t have an account?</span>
+          <a id="signup-link">Sign up</a>
+        </div>
+      </div>
+
+      <!-- ============ Step 1b: QR sign-in ============ -->
+      <div class="view" id="view-qr">
+        <button class="back" onclick="goto('welcome')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to email
+        </button>
+
+        <div class="logo-block" style="margin-top:8px;">
+          <div class="logo-mark">
+            <span class="bar b1"></span>
+            <span class="bar b2"></span>
+            <span class="bar b3"></span>
+          </div>
+          <div class="title">Sign in with QR code</div>
+          <div class="subtitle">Scan with the Tanka mobile app to sign in instantly.</div>
+        </div>
+
+        <div class="qr-stage">
+          <div class="qr-frame">
+            <span class="corner-tl"></span>
+            <span class="corner-br"></span>
+            <svg class="qr-svg" id="qr-svg" viewBox="-2 -2 33 33" shape-rendering="crispEdges" aria-label="QR code"></svg>
+            <div class="qr-scan"></div>
+            <div class="qr-logo">
+              <div class="lm">
+                <span class="bar b1"></span>
+                <span class="bar b2"></span>
+                <span class="bar b3"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qr-tip">
+          Open <b>Tanka</b> on your phone &nbsp;·&nbsp; <b>Me</b> &nbsp;·&nbsp; <b>Scan QR</b>
+        </div>
+
+        <div class="reset-row" style="margin-top:18px;">
+          Don’t have the app yet? <a onclick="toast('Mobile app: open in Tanka iOS / Android')">Get it here</a>
+        </div>
+      </div>
+
+      <!-- ============ Step 2: Verify ============ -->
+      <div class="view" id="view-verify">
+        <button class="back" onclick="goto('welcome')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <div class="logo-block" style="margin-top:18px; margin-bottom:8px;">
+          <div class="title">Check your email</div>
+          <div class="subtitle">
+            We sent a 6-digit code to <b id="verify-email" style="color:var(--ink);">you@example.com</b>
+          </div>
+        </div>
+
+        <div class="code-row" id="code-row">
+          <input class="code" maxlength="1" inputmode="numeric" autocomplete="one-time-code"/>
+          <input class="code" maxlength="1" inputmode="numeric"/>
+          <input class="code" maxlength="1" inputmode="numeric"/>
+          <input class="code" maxlength="1" inputmode="numeric"/>
+          <input class="code" maxlength="1" inputmode="numeric"/>
+          <input class="code" maxlength="1" inputmode="numeric"/>
+        </div>
+
+        <div class="resend-row">
+          <span id="code-status">Tip: try <b style="color:var(--ink);">246237</b> for the demo</span>
+          <span class="link" id="resend-link" aria-disabled="true">Resend (<span id="resend-count">56</span>s)</span>
+        </div>
+
+        <div class="btn-row" style="margin-top:24px;">
+          <button class="btn btn-primary" id="verify-btn" disabled>Continue</button>
+        </div>
+
+        <div class="reset-row">
+          Wrong address? <a onclick="goto('welcome')">Use a different email</a>
+        </div>
+      </div>
+
+      <!-- ============ Step 3: Profile ============ -->
+      <div class="view" id="view-profile">
+        <button class="back" onclick="goto('verify')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <div class="logo-block" style="margin-top:18px; margin-bottom:0;">
+          <div class="title">Create your profile</div>
+          <div class="subtitle">This is how teammates will see you.</div>
+        </div>
+
+        <div class="avatar-stage">
+          <div class="avatar-big" id="avatar-big">
+            <span id="avatar-initial">H</span>
+            <label class="avatar-edit" for="avatar-upload" title="Upload avatar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </label>
+            <input type="file" id="avatar-upload" accept="image/*" style="display:none;"/>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="field" style="margin-top:0;">
+            <label class="label">First name</label>
+            <input class="input" id="first-name" placeholder="Han" autocomplete="given-name"/>
+          </div>
+          <div class="field" style="margin-top:0;">
+            <label class="label">Last name <span style="color:var(--muted-2);font-weight:400;">(optional)</span></label>
+            <input class="input" id="last-name" placeholder="Yichun" autocomplete="family-name"/>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top:22px;">
+          <button class="btn btn-primary" id="profile-btn" disabled>Create profile</button>
+        </div>
+      </div>
+
+      <!-- ============ Step 4 (alt): Invitations ============ -->
+      <div class="view" id="view-invitations">
+        <button class="back" onclick="goto('profile')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <div class="logo-block" style="margin-top:18px; margin-bottom:22px;">
+          <div class="title">You’ve been invited</div>
+          <div class="subtitle"><span id="inv-count">3</span> people invited you to join their workspaces</div>
+        </div>
+
+        <div class="invite-list" id="invite-list"></div>
+
+        <div class="or-on-own">Or start on your own</div>
+        <div class="or-actions">
+          <button class="or-action" onclick="goto('create-team')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Create a new team
+          </button>
+          <button class="or-action" onclick="goto('join-team')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="8" r="2.5"/><path d="M16 20a5 5 0 0 1 6-4.9"/></svg>
+            Join existing team
+          </button>
+        </div>
+      </div>
+
+      <!-- ============ Step 4: Space choice ============ -->
+      <div class="view" id="view-space">
+        <div class="logo-block" style="margin-top:18px; margin-bottom:22px;">
+          <div class="title">Get your space started</div>
+          <div class="subtitle">Pick how you want to begin. You can always switch later.</div>
+        </div>
+
+        <div class="choice" onclick="goto('create-team')">
+          <div class="choice-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a0f1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          </div>
+          <div class="choice-body">
+            <div class="choice-title">Create a new team</div>
+            <div class="choice-sub">Set up a collaboration space for your team.</div>
+          </div>
+          <svg class="choice-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+
+        <div class="choice" onclick="goto('join-team')">
+          <div class="choice-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a0f1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="8" r="2.5"/><path d="M16 20a5 5 0 0 1 6-4.9"/></svg>
+          </div>
+          <div class="choice-body">
+            <div class="choice-title">Join an existing team</div>
+            <div class="choice-sub">Use an invite code or browse Community.</div>
+          </div>
+          <svg class="choice-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+      </div>
+
+      <!-- ============ Step 4a: Create team ============ -->
+      <div class="view" id="view-create-team">
+        <button class="back" onclick="goto('space')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <div class="logo-block" style="margin-top:8px; margin-bottom:18px;">
+          <div class="title">Create team</div>
+          <div class="subtitle">You’ll be the Owner of this team.</div>
+        </div>
+
+        <div class="team-avatar-stage">
+          <div class="team-avatar" id="team-avatar">
+            <span id="team-avatar-initial" style="display:none;"></span>
+            <svg id="team-avatar-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9aa3b2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21h18M5 21V7l7-4 7 4v14"/>
+              <path d="M9 9h2M9 13h2M9 17h2M13 9h2M13 13h2M13 17h2"/>
+            </svg>
+            <label class="avatar-edit" for="team-avatar-upload" title="Upload team icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </label>
+            <input type="file" id="team-avatar-upload" accept="image/*" style="display:none;"/>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:0;">
+          <label class="label">Team name</label>
+          <input class="input" id="team-name" placeholder="e.g. Acme Design" maxlength="40"/>
+        </div>
+
+        <div class="btn-row" style="margin-top:22px;">
+          <button class="btn btn-primary" id="create-team-btn" disabled>Create team</button>
+        </div>
+
+        <div class="reset-row" style="margin-top:14px;">
+          You can invite teammates later from team settings.
+        </div>
+      </div>
+
+      <!-- ============ Step 4b: Join team ============ -->
+      <div class="view" id="view-join-team">
+        <button class="back" onclick="goto('space')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <div class="logo-block" style="margin-top:8px; margin-bottom:18px;">
+          <div class="title">Join a team</div>
+          <div class="subtitle">Use an invite code or browse Community.</div>
+        </div>
+
+        <div class="tabs-wrap">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-jtab="invite" role="tab">Invite code</button>
+            <button class="tab" data-jtab="community" role="tab">Community</button>
+          </div>
+        </div>
+
+        <div class="tab-panes" id="join-panes">
+          <!-- Invite code pane -->
+          <div class="tab-pane is-active" id="pane-invite">
+            <div class="field" style="margin-top:6px;">
+              <label class="label">Invite code</label>
+              <input class="input" id="invite-code" placeholder="Paste the invitation code" maxlength="20" style="letter-spacing:1.5px;text-transform:uppercase;"/>
+              <div class="help" id="invite-help">Try <b>DEMO-2024</b> for the demo</div>
+            </div>
+            <div class="btn-row" style="margin-top:18px;">
+              <button class="btn btn-primary" id="join-team-btn" disabled>Join team</button>
+            </div>
+          </div>
+
+          <!-- Community pane -->
+          <div class="tab-pane" id="pane-community">
+            <div class="team-list" id="team-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ Step 4c: Apply to join (restricted) ============ -->
+      <div class="view" id="view-apply-join">
+        <button class="back" onclick="goto('join-team')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+
+        <div class="logo-block" style="margin-top:8px; margin-bottom:18px;">
+          <div class="title">Apply to join</div>
+          <div class="subtitle">Tell admins why you’d like to join.</div>
+        </div>
+
+        <div class="team-card" id="apply-team-card"></div>
+
+        <div class="field">
+          <label class="label">Why you’d like to join</label>
+          <textarea class="input textarea" id="apply-reason" rows="5" placeholder="Share a bit about yourself and what you hope to gain from this community…" maxlength="500"></textarea>
+          <div class="help" id="apply-counter" style="text-align:right;">0 / 500</div>
+        </div>
+
+        <div class="info-banner">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          You can continue after submitting — we’ll notify you of the result.
+        </div>
+
+        <div class="btn-row" style="margin-top:14px;">
+          <button class="btn btn-primary" id="apply-btn" disabled>Submit application</button>
+        </div>
+      </div>
+
+      <!-- ============ Done ============ -->
+      <div class="view" id="view-done">
+        <div class="logo-block" style="margin-top:40px;">
+          <div class="success-mark">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="title" id="done-title">You're all set!</div>
+          <div class="subtitle" id="done-sub">Welcome to Tanka. Let's get you into your workspace.</div>
+        </div>
+
+        <div class="btn-row" style="margin-top:24px;">
+          <button class="btn btn-primary" onclick="restart()">Open workspace →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Done</div>
+
+<!-- Quick jump (demo helper) -->
+<button class="jump-fab" id="jump-fab" title="Jump to any step (demo only)">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+</button>
+<div class="jump-panel" id="jump-panel">
+  <div class="jump-title">Jump to step <span class="jump-tag">demo</span></div>
+  <button class="jump-item" data-jump="welcome">Welcome (sign in)</button>
+  <button class="jump-item" data-jump="welcome-signup">Welcome (sign up)</button>
+  <button class="jump-item" data-jump="qr">QR sign-in</button>
+  <button class="jump-item" data-jump="verify">Verify code</button>
+  <button class="jump-item" data-jump="profile">Create profile</button>
+  <button class="jump-item" data-jump="invitations">Invitations (3 pending)</button>
+  <button class="jump-item" data-jump="space">Space choice (no invites)</button>
+  <div class="jump-sep">Team flows</div>
+  <button class="jump-item" data-jump="create-team">Create team</button>
+  <button class="jump-item" data-jump="join-invite">Join · Invite code</button>
+  <button class="jump-item" data-jump="join-community">Join · Community list</button>
+  <button class="jump-item" data-jump="apply-join">Apply to join (restricted)</button>
+  <button class="jump-item" data-jump="done">Done / Success</button>
+</div>
+
+<!-- Review notes -->
+<button class="notes-fab" id="notes-fab" title="Show design review notes">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+</button>
+
+<div class="notes-panel" id="notes-panel">
+  <h3>Design review · what I changed</h3>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX v3</span>
+    <b>QR 入口：从底部全宽按钮 → inline 文字链。</b><br>
+    第一版 hover 整块灰底像"第三个 OAuth 按钮"，丑且暗示 QR 跟 Apple/Google 平权。最终改为底部 inline 灰字 + 小图标，hover 下划线（无背景块），视觉重量再降一半 (~24px)。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX</span>
+    <b>QR 视图：去掉巨大白卡 + 加品牌取景框。</b><br>
+    原稿（和 v1）把 QR 套在一个 200×200 的白色卡片里，看起来像"PPT 截了张图贴上来"。最终方案：白底只贴在 QR 模块下方（保留 quiet zone 让 QR 真能扫），白底外四个角是绿/蓝品牌色取景框，加扫描线动画 — 视觉重心从"容器"转向"对准了一个二维码物体"。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill add">ADD</span>
+    <b>QR pattern 真实化 + 中心 Tanka logo。</b><br>
+    原稿用 conic-gradient 拼出来的"伪 QR"看起来像棋盘格不像二维码。改用 SVG 真画 29×29 模块（含 3 个 position marker + alignment marker + timing pattern + 伪随机数据模块 ~46% 密度），中心留出 9×9 区域嵌 Tanka 品牌 mark — 立刻"像 Telegram / WhatsApp 那种正经登录 QR"。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX</span>
+    <b>Continue 按钮的 disabled 态。</b><br>
+    原稿默认就是灰色（看起来像"不可点"但其实是主按钮空态），用户会怀疑产品是不是坏了。这里改成：邮箱为空时 disabled (浅灰)，输入合法邮箱后立即变深色启用 — 即时反馈。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX v3</span>
+    <b>Sign up 入口：删了又加回来，但联动更完整。</b><br>
+    v1 把 toggle 单独贴底部、v2 整个删掉合并到副标题、最终 v3 恢复底部入口。理由：虽然 Tanka 是无密码 = 前端逻辑相同，但用户**习惯性地在登录页底部找 Sign up**，去掉会让人怀疑"是不是不开放注册"。<br>
+    切换时<b>四处联动</b>：标题（Welcome to Tanka ↔ Create your Tanka account）、副标题、主按钮文案（Continue ↔ Create account）、底部链接本身（Sign up ↔ Sign in）— 视觉反馈完整，但表单 0 改动，参考 Notion / Linear / Vercel 做法。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX</span>
+    <b>Last name 输入框的"幽灵 X 图标"。</b><br>
+    原稿 Last Name 空状态时右侧莫名出现一个小 X / 容器边线，是 clear-icon 没有按"有值才显示"做。已删除，并将 Last name 改为 <b>(optional)</b>，因为很多文化只有单名。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX</span>
+    <b>默认头像不要用真人照片。</b><br>
+    原稿放了一张金发女性的库存图作为默认头像 — 跨性别/族裔/真实感都不合适，而且会让用户以为这是别人的账户。改为：基于姓名首字母的彩色 placeholder + 右下角 <b>+</b> 上传按钮（保留原交互）。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill add">ADD</span>
+    <b>6 位 code 体验补强。</b><br>
+    自动跳格、支持<b>整段粘贴</b>（PM 邮箱里复制 246237 一键粘上）、6 位填满自动 submit、错码 shake + 红框、resend 倒计时禁用态、demo 提示码 246237。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill add">ADD</span>
+    <b>步骤指示器。</b><br>
+    在 verify / profile / space 三步顶部加了三段小条，让用户知道还差几步 — 原稿用户完全不知道流程总长，容易在 profile 那步犹豫。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill add">ADD</span>
+    <b>Skip for now / Use a different email。</b><br>
+    回退路径要明确：verify 页加"Wrong address?"，space 页加"Skip for now"，避免邮箱输错或暂时不想创建组织的用户被卡死。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX</span>
+    <b>Social buttons 排版。</b><br>
+    原稿 Apple / Google 各占一整行高度太堆叠。改为<b>两列等宽</b>，节省纵向空间，QR 也不再需要"Sign in with QR code"这一行，整体登录卡片缩短约 100px。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill add">ADD</span>
+    <b>Create team / Join team 实质表单。</b><br>
+    原稿点完"Create a new team"后没有后续，本 demo 给了：团队名 + 邮箱邀请 chip 输入（Enter / Space 入 tag，× 删除）；Join 给了 invite code + Browse Community fallback。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill fix">FIX</span>
+    <b>Top bar 一致性。</b><br>
+    原稿 welcome 页没有 Tanka logo header（logo 在卡片中央），其它页面又突然出现左上角 wordmark，跳跃感强。统一为全程顶部都有小 logo，登录后右侧出现用户头像 chip。
+  </div>
+
+  <div class="note">
+    <span class="tag-pill add">ADD</span>
+    <b>键盘可达性。</b><br>
+    所有按钮、tab、tag 删除均支持键盘；code 输入支持 ←/→ 切格、Backspace 退格自动回上一格。
+  </div>
+</div>
+
+<script>
+  // ---------- State ----------
+  const state = {
+    mode: 'signin',     // 'signin' | 'signup'
+    email: '',
+    firstName: '',
+    lastName: '',
+    avatarDataUrl: null,
+    teamName: '',
+    teamAvatarUrl: null,
+    inviteCode: '',
+    selectedTeam: null,
+    invitations: [],
+  };
+
+  // Mock invitation pool — populated when needed
+  const INVITATION_POOL = [
+    { id: 1, teamId: 'pdh', inviter: 'Maya Rodriguez' },
+    { id: 2, teamId: 'idm', inviter: 'Eric Wang' },
+    { id: 3, teamId: 'aip', inviter: 'Lin Zhao' },
+  ];
+  function populateInvitations() {
+    state.invitations = INVITATION_POOL.map(i => ({ ...i, status: 'pending' }));
+  }
+
+  // ---------- Mode toggle (sign in <-> sign up) ----------
+  const COPY = {
+    signin: {
+      title: 'Welcome to Tanka',
+      sub:   'Sign in to continue.',
+      btn:   'Continue',
+      prompt:'Don’t have an account?',
+      link:  'Sign up',
+    },
+    signup: {
+      title: 'Create your Tanka account',
+      sub:   'Get started — no password required.',
+      btn:   'Create account',
+      prompt:'Already have an account?',
+      link:  'Sign in',
+    },
+  };
+  function setMode(mode) {
+    state.mode = mode;
+    const c = COPY[mode];
+    document.getElementById('welcome-title').textContent = c.title;
+    document.getElementById('welcome-sub').textContent   = c.sub;
+    document.getElementById('continue-label').textContent = c.btn;
+    document.getElementById('signup-prompt').textContent = c.prompt;
+    document.getElementById('signup-link').textContent   = c.link;
+    document.getElementById('view-welcome').classList.toggle('is-signup', mode === 'signup');
+  }
+  document.getElementById('signup-link').addEventListener('click', () => {
+    setMode(state.mode === 'signin' ? 'signup' : 'signin');
+  });
+
+  // ---------- Router ----------
+  function goto(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const view = document.getElementById('view-' + name);
+    if (view) {
+      view.classList.add('active');
+      // focus first input
+      requestAnimationFrame(() => {
+        const inp = view.querySelector('input:not([type=file])');
+        if (inp && name !== 'welcome' && name !== 'space' && name !== 'done') inp.focus();
+      });
+    }
+    // toggle user chip
+    const showChip = ['profile','space','invitations','create-team','join-team','apply-join','done'].includes(name);
+    document.getElementById('user-chip-wrap').style.display = showChip ? 'inline-block' : 'none';
+    document.getElementById('app-pop-wrap').style.display = showChip ? 'none' : 'inline-block';
+    // ensure menus are closed when navigating
+    document.getElementById('user-chip-wrap').classList.remove('open');
+    document.getElementById('app-pop-wrap').classList.remove('open');
+
+    if (name === 'verify') startResendCountdown();
+  }
+
+  // ---------- Email input ----------
+  const emailInput = document.getElementById('email');
+  const emailHelp = document.getElementById('email-help');
+  const continueBtn = document.getElementById('continue-btn');
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function validateEmail() {
+    const v = emailInput.value.trim();
+    const ok = EMAIL_RE.test(v);
+    continueBtn.disabled = !ok;
+    if (!v) {
+      emailInput.classList.remove('is-error');
+      emailHelp.textContent = '';
+      emailHelp.classList.remove('error');
+    } else if (!ok) {
+      emailInput.classList.add('is-error');
+      emailHelp.textContent = 'Hmm, that doesn’t look like a valid email.';
+      emailHelp.classList.add('error');
+    } else {
+      emailInput.classList.remove('is-error');
+      emailHelp.textContent = '';
+      emailHelp.classList.remove('error');
+    }
+    return ok;
+  }
+  emailInput.addEventListener('input', validateEmail);
+  emailInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !continueBtn.disabled) continueBtn.click();
+  });
+  continueBtn.addEventListener('click', () => {
+    if (!validateEmail()) return;
+    state.email = emailInput.value.trim();
+    document.getElementById('verify-email').textContent = state.email;
+    // derive avatar initial
+    const first = state.email[0].toUpperCase();
+    document.getElementById('user-avatar').textContent = first;
+    document.getElementById('avatar-initial').textContent = first;
+    goto('verify');
+  });
+
+  // ---------- Code input ----------
+  const codeInputs = Array.from(document.querySelectorAll('#code-row .code'));
+  const verifyBtn = document.getElementById('verify-btn');
+  const codeStatus = document.getElementById('code-status');
+
+  function readCode() { return codeInputs.map(i => i.value).join(''); }
+  function updateCodeState() {
+    codeInputs.forEach(i => i.classList.toggle('filled', !!i.value));
+    verifyBtn.disabled = readCode().length < 6;
+  }
+  codeInputs.forEach((inp, idx) => {
+    inp.addEventListener('input', e => {
+      // sanitize
+      inp.value = inp.value.replace(/\D/g, '').slice(0,1);
+      updateCodeState();
+      if (inp.value && idx < codeInputs.length - 1) codeInputs[idx+1].focus();
+      // auto-submit
+      if (readCode().length === 6) {
+        verifyBtn.click();
+      }
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !inp.value && idx > 0) {
+        codeInputs[idx-1].focus();
+        codeInputs[idx-1].value = '';
+        updateCodeState();
+      } else if (e.key === 'ArrowLeft' && idx > 0) {
+        codeInputs[idx-1].focus();
+      } else if (e.key === 'ArrowRight' && idx < codeInputs.length - 1) {
+        codeInputs[idx+1].focus();
+      }
+    });
+    inp.addEventListener('paste', e => {
+      const txt = (e.clipboardData || window.clipboardData).getData('text');
+      const digits = txt.replace(/\D/g,'').slice(0,6);
+      if (digits.length >= 1) {
+        e.preventDefault();
+        for (let i = 0; i < codeInputs.length; i++) {
+          codeInputs[i].value = digits[i] || '';
+        }
+        updateCodeState();
+        if (digits.length === 6) {
+          codeInputs[5].focus();
+          verifyBtn.click();
+        } else {
+          codeInputs[Math.min(digits.length, 5)].focus();
+        }
+      }
+    });
+  });
+  verifyBtn.addEventListener('click', () => {
+    const code = readCode();
+    if (code !== '246237') {
+      codeInputs.forEach(i => i.classList.add('is-error'));
+      codeStatus.innerHTML = '<span style="color:var(--danger);">Code didn’t match. Try <b>246237</b>.</span>';
+      setTimeout(() => codeInputs.forEach(i => i.classList.remove('is-error')), 500);
+      return;
+    }
+    goto('profile');
+  });
+
+  // resend countdown
+  let resendTimer = null;
+  function startResendCountdown() {
+    const link = document.getElementById('resend-link');
+    const count = document.getElementById('resend-count');
+    let n = 56;
+    count.textContent = n;
+    link.setAttribute('aria-disabled', 'true');
+    link.innerHTML = `Resend (<span id="resend-count">${n}</span>s)`;
+    clearInterval(resendTimer);
+    resendTimer = setInterval(() => {
+      n -= 1;
+      if (n <= 0) {
+        clearInterval(resendTimer);
+        link.removeAttribute('aria-disabled');
+        link.innerHTML = 'Resend code';
+      } else {
+        link.innerHTML = `Resend (<span>${n}</span>s)`;
+      }
+    }, 1000);
+    link.onclick = () => {
+      if (link.getAttribute('aria-disabled') === 'true') return;
+      toast('Code resent to ' + state.email);
+      startResendCountdown();
+    };
+  }
+
+  // ---------- Profile ----------
+  const firstNameInput = document.getElementById('first-name');
+  const lastNameInput = document.getElementById('last-name');
+  const profileBtn = document.getElementById('profile-btn');
+  function validateProfile() {
+    const ok = firstNameInput.value.trim().length > 0;
+    profileBtn.disabled = !ok;
+    // live update avatar initial
+    const init = (firstNameInput.value.trim()[0] || state.email[0] || '?').toUpperCase();
+    document.getElementById('avatar-initial').textContent = init;
+    document.getElementById('user-avatar').textContent = init;
+  }
+  firstNameInput.addEventListener('input', validateProfile);
+  lastNameInput.addEventListener('input', () => {});
+  profileBtn.addEventListener('click', () => {
+    state.firstName = firstNameInput.value.trim();
+    state.lastName = lastNameInput.value.trim();
+    const displayName = state.firstName + (state.lastName ? ' ' + state.lastName[0] + '.' : '');
+    document.getElementById('user-name').textContent = displayName;
+    // route: if user has pending invitations → show invitations view; else space-choice
+    if (state.invitations.some(i => i.status === 'pending')) {
+      renderInvitations();
+      goto('invitations');
+    } else {
+      goto('space');
+    }
+  });
+
+  // avatar upload
+  document.getElementById('avatar-upload').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      state.avatarDataUrl = ev.target.result;
+      const big = document.getElementById('avatar-big');
+      let img = big.querySelector('img');
+      if (!img) {
+        img = document.createElement('img');
+        big.insertBefore(img, big.firstChild);
+        document.getElementById('avatar-initial').style.display = 'none';
+      }
+      img.src = ev.target.result;
+      // also update small avatar
+      const sm = document.getElementById('user-avatar');
+      sm.textContent = '';
+      sm.style.background = `url(${ev.target.result}) center/cover`;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ---------- Create team ----------
+  const teamNameInput = document.getElementById('team-name');
+  const createTeamBtn = document.getElementById('create-team-btn');
+  const teamAvatar = document.getElementById('team-avatar');
+  const teamAvatarInitial = document.getElementById('team-avatar-initial');
+
+  teamNameInput.addEventListener('input', () => {
+    const v = teamNameInput.value.trim();
+    createTeamBtn.disabled = v.length < 2;
+    // live initial in avatar (only if user hasn't uploaded a custom image)
+    if (!state.teamAvatarUrl) {
+      if (v) {
+        const initial = v[0].toUpperCase();
+        teamAvatarInitial.textContent = initial;
+        teamAvatarInitial.style.display = 'inline';
+        teamAvatar.classList.add('has-name');
+      } else {
+        teamAvatarInitial.style.display = 'none';
+        teamAvatar.classList.remove('has-name');
+      }
+    }
+  });
+
+  document.getElementById('team-avatar-upload').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      state.teamAvatarUrl = ev.target.result;
+      teamAvatar.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      teamAvatar.appendChild(img);
+      // re-add edit button
+      const edit = document.createElement('label');
+      edit.className = 'avatar-edit';
+      edit.htmlFor = 'team-avatar-upload';
+      edit.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+      teamAvatar.appendChild(edit);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  createTeamBtn.addEventListener('click', () => {
+    state.teamName = teamNameInput.value.trim();
+    document.getElementById('done-title').textContent = `${state.teamName} is ready!`;
+    document.getElementById('done-sub').textContent = `Welcome aboard — invite your team anytime from Settings.`;
+    goto('done');
+  });
+
+  // ---------- Join team: tabs (grid-stacked, cross-fade, no layout shift) ----------
+  function switchJoinTab(tab) {
+    document.querySelectorAll('[data-jtab]').forEach(x =>
+      x.classList.toggle('active', x.dataset.jtab === tab)
+    );
+    document.getElementById('pane-invite').classList.toggle('is-active', tab === 'invite');
+    document.getElementById('pane-community').classList.toggle('is-active', tab === 'community');
+  }
+  document.querySelectorAll('[data-jtab]').forEach(t => {
+    t.addEventListener('click', () => switchJoinTab(t.dataset.jtab));
+  });
+
+  // ---------- Invite code ----------
+  const inviteCodeInput = document.getElementById('invite-code');
+  const inviteHelp = document.getElementById('invite-help');
+  const joinTeamBtn = document.getElementById('join-team-btn');
+  inviteCodeInput.addEventListener('input', () => {
+    const v = inviteCodeInput.value.replace(/\s/g,'');
+    joinTeamBtn.disabled = v.length < 4;
+    inviteHelp.innerHTML = 'Try <b>DEMO-2024</b> for the demo';
+    inviteHelp.classList.remove('error');
+    inviteCodeInput.classList.remove('is-error');
+  });
+  joinTeamBtn.addEventListener('click', () => {
+    const code = inviteCodeInput.value.trim().toUpperCase();
+    if (!/[A-Z]/.test(code) || code.length < 4) {
+      inviteHelp.textContent = 'That code doesn’t look right. Ask your admin for a fresh one.';
+      inviteHelp.classList.add('error');
+      inviteCodeInput.classList.add('is-error');
+      setTimeout(() => inviteCodeInput.classList.remove('is-error'), 400);
+      return;
+    }
+    state.inviteCode = code;
+    document.getElementById('done-title').textContent = 'Joined!';
+    document.getElementById('done-sub').textContent = 'You’re now part of the team. Welcome aboard.';
+    goto('done');
+  });
+
+  // ---------- Community list ----------
+  const COMMUNITY_TEAMS = [
+    { id:'pdh', name:'Product Design Hub', members:24, restricted:false, bg:'#0a0f1f',
+      iconSvg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>' },
+    { id:'idm', name:'Indie Makers', members:520, restricted:false, bg:'#c4ed53',
+      iconSvg:'<svg viewBox="0 0 24 24" fill="none" stroke="#0a0f1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 7.5l3 8M16.5 7.5l-3 8"/></svg>' },
+    { id:'aip', name:'AI Practitioners', members:294, restricted:true, bg:'#7b3fff',
+      iconSvg:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 4a4 4 0 0 0-3.7 5.5L4 14v4h4l4.5-4.3A4 4 0 1 0 12 4z"/></svg>' },
+    { id:'dco', name:'Design Council', members:298, restricted:false, bg:'#1d2433',
+      iconSvg:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l8 8-8 8"/></svg>' },
+    { id:'gph', name:'ChatGPT Hub', members:232, restricted:true, bg:'#10a37f',
+      iconSvg:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M19.4 10.2a4.7 4.7 0 0 0-.4-3.9 4.8 4.8 0 0 0-5.2-2.3 4.7 4.7 0 0 0-8 1.7 4.8 4.8 0 0 0-3.2 2.3 4.8 4.8 0 0 0 .6 5.6 4.7 4.7 0 0 0 .4 3.9 4.8 4.8 0 0 0 5.2 2.3 4.7 4.7 0 0 0 8-1.7 4.8 4.8 0 0 0 3.2-2.3 4.8 4.8 0 0 0-.6-5.6zM12 19a3.5 3.5 0 0 1-2.3-.8l.1-.1 3.9-2.2c.2-.1.3-.3.3-.5v-5.5l1.6.9v4.6A3.6 3.6 0 0 1 12 19z"/></svg>' },
+  ];
+  function renderTeamList() {
+    const root = document.getElementById('team-list');
+    root.innerHTML = COMMUNITY_TEAMS.map(t => `
+      <div class="team-row" data-team="${t.id}">
+        <div class="t-icon" style="background:${t.bg};">${t.iconSvg}</div>
+        <div class="t-body">
+          <div class="t-title">${t.name}${t.restricted ? ' <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' : ''}</div>
+          <div class="t-sub">${t.members} members <span class="dot"></span> ${t.restricted ? 'Restricted' : 'Public'}</div>
+        </div>
+        <button class="btn-team ${t.restricted ? 'is-apply' : ''}" data-team="${t.id}">${t.restricted ? 'Apply' : 'Join'}</button>
+      </div>
+    `).join('');
+    root.querySelectorAll('.btn-team').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const team = COMMUNITY_TEAMS.find(t => t.id === btn.dataset.team);
+        if (team.restricted) {
+          state.selectedTeam = team;
+          renderApplyCard(team);
+          goto('apply-join');
+        } else {
+          state.selectedTeam = team;
+          document.getElementById('done-title').textContent = `Joined ${team.name}!`;
+          document.getElementById('done-sub').textContent = 'You’re now part of the community.';
+          goto('done');
+        }
+      });
+    });
+  }
+  renderTeamList();
+
+  // ---------- Apply to join ----------
+  function renderApplyCard(team) {
+    document.getElementById('apply-team-card').innerHTML = `
+      <div class="t-icon" style="background:${team.bg};">${team.iconSvg}</div>
+      <div class="t-body">
+        <div class="t-title">${team.name}${team.restricted ? ' <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' : ''}</div>
+        <div class="t-sub">${team.members} members <span class="dot"></span> ${team.restricted ? 'Restricted' : 'Public'}</div>
+      </div>
+    `;
+  }
+  const applyReason = document.getElementById('apply-reason');
+  const applyBtn = document.getElementById('apply-btn');
+  const applyCounter = document.getElementById('apply-counter');
+  applyReason.addEventListener('input', () => {
+    const len = applyReason.value.length;
+    applyCounter.textContent = `${len} / 500`;
+    applyBtn.disabled = applyReason.value.trim().length < 10;
+  });
+  applyBtn.addEventListener('click', () => {
+    document.getElementById('done-title').textContent = 'Application sent!';
+    document.getElementById('done-sub').textContent =
+      `We’ve forwarded your application to ${state.selectedTeam.name} admins. You’ll get a notification once they reply.`;
+    goto('done');
+  });
+
+  // ---------- Invitations ----------
+  function renderInvitations() {
+    const root = document.getElementById('invite-list');
+    const pending = state.invitations.filter(i => i.status === 'pending');
+    document.getElementById('inv-count').textContent = pending.length;
+
+    if (pending.length === 0) {
+      root.innerHTML = '<div class="invite-empty">All invitations handled. Pick an option below to continue.</div>';
+      return;
+    }
+
+    const INV_BG = ['linear-gradient(135deg,#ffb24d,#ff7a59)','linear-gradient(135deg,#7b3fff,#2e8bff)','linear-gradient(135deg,#28d17c,#2e8bff)'];
+    root.innerHTML = pending.map((inv, idx) => {
+      const team = COMMUNITY_TEAMS.find(t => t.id === inv.teamId);
+      const initial = inv.inviter[0];
+      return `
+        <div class="invite-card" data-inv="${inv.id}">
+          <div class="t-icon" style="background:${team.bg};">${team.iconSvg}</div>
+          <div class="t-body">
+            <div class="t-title">${team.name}</div>
+            <div class="t-sub">${team.members} members</div>
+            <div class="t-attr">
+              <span class="by-avatar" style="background:${INV_BG[idx % INV_BG.length]};">${initial}</span>
+              Invited by <b>${inv.inviter}</b>
+            </div>
+          </div>
+          <div class="invite-actions">
+            <button class="btn-decline" data-action="decline" data-inv="${inv.id}">Decline</button>
+            <button class="btn-accept" data-action="accept" data-inv="${inv.id}">Accept</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    root.querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt(btn.dataset.inv, 10);
+        const inv = state.invitations.find(i => i.id === id);
+        const team = COMMUNITY_TEAMS.find(t => t.id === inv.teamId);
+        const card = root.querySelector(`.invite-card[data-inv="${id}"]`);
+
+        if (btn.dataset.action === 'accept') {
+          inv.status = 'accepted';
+          document.getElementById('done-title').textContent = `Joined ${team.name}!`;
+          document.getElementById('done-sub').textContent =
+            `${inv.inviter} will be notified. You’re now part of the team.`;
+          goto('done');
+        } else {
+          // decline: collapse card with animation, then re-render
+          inv.status = 'declined';
+          card.classList.add('is-leaving');
+          setTimeout(() => renderInvitations(), 280);
+          toast(`Declined invite from ${inv.inviter}`);
+        }
+      });
+    });
+  }
+
+  // ---------- OAuth fake ----------
+  function fakeOauth(provider) {
+    toast(`Continue with ${provider} (mocked)`);
+    setTimeout(() => {
+      state.email = `you@${provider.toLowerCase()}.com`;
+      document.getElementById('user-avatar').textContent = 'Y';
+      document.getElementById('avatar-initial').textContent = 'Y';
+      document.getElementById('verify-email').textContent = state.email;
+      goto('profile'); // OAuth skips email-code
+    }, 500);
+  }
+
+  // ---------- Toast ----------
+  let toastTimer;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // ---------- Restart ----------
+  function resetAllState() {
+    Object.assign(state, {
+      mode:'signin', email:'', firstName:'', lastName:'',
+      avatarDataUrl:null, teamName:'', teamAvatarUrl:null,
+      inviteCode:'', selectedTeam:null, invitations:[],
+    });
+    emailInput.value = '';
+    codeInputs.forEach(i => { i.value=''; i.classList.remove('filled','is-error'); });
+    firstNameInput.value = ''; lastNameInput.value='';
+    teamNameInput.value=''; inviteCodeInput.value='';
+    applyReason.value = ''; applyCounter.textContent = '0 / 500';
+    teamAvatar.classList.remove('has-name');
+    teamAvatarInitial.style.display = 'none';
+    setMode('signin');
+    validateEmail(); updateCodeState(); validateProfile();
+    createTeamBtn.disabled = true; joinTeamBtn.disabled = true; applyBtn.disabled = true;
+    goto('welcome');
+  }
+
+  function restart() {
+    toast('In a real app, we’d open the workspace now');
+    setTimeout(resetAllState, 800);
+  }
+
+  // ---------- User menu (chip dropdown) ----------
+  const userChipWrap = document.getElementById('user-chip-wrap');
+  const userChip = document.getElementById('user-chip');
+  userChip.addEventListener('click', e => {
+    e.stopPropagation();
+    // sync menu contents from current state before opening
+    const name = document.getElementById('user-name').textContent || 'You';
+    const initial = document.getElementById('user-avatar').textContent || 'Y';
+    const avatarBg = document.getElementById('user-avatar').style.background;
+    document.getElementById('user-menu-name').textContent = name;
+    document.getElementById('user-menu-email').textContent = state.email || 'you@tanka.ai';
+    document.getElementById('user-menu-avatar').textContent = initial;
+    if (avatarBg) document.getElementById('user-menu-avatar').style.background = avatarBg;
+    userChipWrap.classList.toggle('open');
+    // close other floating panels
+    document.getElementById('notes-panel').classList.remove('open');
+    document.getElementById('jump-panel').classList.remove('open');
+  });
+  document.addEventListener('click', e => {
+    if (userChipWrap.classList.contains('open') && !userChipWrap.contains(e.target)) {
+      userChipWrap.classList.remove('open');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') userChipWrap.classList.remove('open');
+  });
+
+  document.getElementById('signout-btn').addEventListener('click', () => {
+    userChipWrap.classList.remove('open');
+    toast('Signed out');
+    setTimeout(resetAllState, 350);
+  });
+
+  // ---------- Notes ----------
+  document.getElementById('notes-fab').addEventListener('click', () => {
+    document.getElementById('notes-panel').classList.toggle('open');
+    document.getElementById('jump-panel').classList.remove('open');
+  });
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('notes-panel');
+    const fab = document.getElementById('notes-fab');
+    if (panel.classList.contains('open') && !panel.contains(e.target) && !fab.contains(e.target)) {
+      panel.classList.remove('open');
+    }
+    const jp = document.getElementById('jump-panel');
+    const jf = document.getElementById('jump-fab');
+    if (jp.classList.contains('open') && !jp.contains(e.target) && !jf.contains(e.target)) {
+      jp.classList.remove('open');
+    }
+  });
+
+  // ---------- Jump menu (demo helper) ----------
+  document.getElementById('jump-fab').addEventListener('click', e => {
+    e.stopPropagation();
+    document.getElementById('jump-panel').classList.toggle('open');
+    document.getElementById('notes-panel').classList.remove('open');
+  });
+
+  function ensureDemoUser() {
+    if (!state.email) {
+      state.email = 'demo@tanka.ai';
+      document.getElementById('email').value = 'demo@tanka.ai';
+      document.getElementById('verify-email').textContent = 'demo@tanka.ai';
+      validateEmail();
+    }
+    if (!state.firstName) {
+      state.firstName = 'Demo';
+      state.lastName = 'User';
+      document.getElementById('first-name').value = 'Demo';
+      document.getElementById('last-name').value = 'User';
+      document.getElementById('user-name').textContent = 'Demo';
+      document.getElementById('user-avatar').textContent = 'D';
+      document.getElementById('avatar-initial').textContent = 'D';
+      validateProfile();
+    }
+  }
+
+  document.querySelectorAll('.jump-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.jump;
+      document.getElementById('jump-panel').classList.remove('open');
+      switch (target) {
+        case 'welcome':
+          setMode('signin'); goto('welcome'); break;
+        case 'welcome-signup':
+          setMode('signup'); goto('welcome'); break;
+        case 'qr':
+          goto('qr'); break;
+        case 'verify':
+          ensureDemoUser(); goto('verify'); break;
+        case 'profile':
+          ensureDemoUser(); goto('profile'); break;
+        case 'space':
+          ensureDemoUser();
+          state.invitations = []; // clear so user lands directly on space view
+          goto('space');
+          break;
+        case 'invitations':
+          ensureDemoUser();
+          populateInvitations();
+          renderInvitations();
+          goto('invitations');
+          break;
+        case 'create-team':
+          ensureDemoUser(); goto('create-team'); break;
+        case 'join-invite':
+          ensureDemoUser(); switchJoinTab('invite'); goto('join-team'); break;
+        case 'join-community':
+          ensureDemoUser();
+          // make sure community pane is mounted before switching so animation triggers cleanly
+          goto('join-team');
+          requestAnimationFrame(() => switchJoinTab('community'));
+          break;
+        case 'apply-join':
+          ensureDemoUser();
+          state.selectedTeam = COMMUNITY_TEAMS.find(t => t.restricted);
+          renderApplyCard(state.selectedTeam);
+          goto('apply-join');
+          break;
+        case 'done':
+          ensureDemoUser();
+          document.getElementById('done-title').textContent = 'You’re all set!';
+          document.getElementById('done-sub').textContent = 'Welcome to Tanka. Let’s get you into your workspace.';
+          goto('done');
+          break;
+      }
+    });
+  });
+
+  // ---------- Mobile-app pill ----------
+  document.getElementById('mobile-app-btn').addEventListener('click', () => {
+    toast('Mobile app: open in Tanka iOS / Android');
+  });
+
+  // ---------- QR pattern (stylized, not a real QR) ----------
+  function renderQR(svgId, initSeed) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+    const SIZE = 29;
+    const INK = '#0a0f1f';
+
+    function drawMarker(ox, oy) {
+      let out = '';
+      out += rect(ox, oy, 7, 1);
+      out += rect(ox, oy+6, 7, 1);
+      out += rect(ox, oy+1, 1, 5);
+      out += rect(ox+6, oy+1, 1, 5);
+      out += rect(ox+2, oy+2, 3, 3);
+      return out;
+    }
+    function rect(x,y,w,h){
+      return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${INK}" rx="0.15"/>`;
+    }
+    let seed = initSeed;
+    function rand() {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return (seed / 0x7fffffff);
+    }
+
+    const reserved = Array.from({length: SIZE}, () => Array(SIZE).fill(false));
+    function reserve(x,y,w,h){
+      for (let i=0;i<w;i++) for (let j=0;j<h;j++){
+        if (x+i<SIZE && y+j<SIZE) reserved[x+i][y+j] = true;
+      }
+    }
+    reserve(0,0,8,8);
+    reserve(SIZE-7,0,8,8);
+    reserve(0,SIZE-7,8,8);
+    const logoSize = 9;
+    const lx = Math.floor((SIZE - logoSize)/2);
+    reserve(lx, lx, logoSize, logoSize);
+    const ax = SIZE - 9, ay = SIZE - 9;
+    reserve(ax, ay, 5, 5);
+
+    let s = '';
+    s += drawMarker(0,0);
+    s += drawMarker(SIZE-7,0);
+    s += drawMarker(0,SIZE-7);
+    s += rect(ax, ay, 5, 1);
+    s += rect(ax, ay+4, 5, 1);
+    s += rect(ax, ay+1, 1, 3);
+    s += rect(ax+4, ay+1, 1, 3);
+    s += rect(ax+2, ay+2, 1, 1);
+    for (let i=8; i<SIZE-8; i++){
+      if (i % 2 === 0) { s += rect(i,6,1,1); s += rect(6,i,1,1); }
+    }
+    for (let y=0; y<SIZE; y++){
+      for (let x=0; x<SIZE; x++){
+        if (reserved[x][y]) continue;
+        if (x===6 || y===6) continue;
+        if (rand() < 0.46) s += rect(x,y,1,1);
+      }
+    }
+    svg.innerHTML = s;
+  }
+  renderQR('qr-svg', 0x9e37);
+  renderQR('qr-ios', 0xa1b2c3);
+  renderQR('qr-android', 0xd5e6f7);
+
+  // ---------- Get mobile app popover ----------
+  const appPopWrap = document.getElementById('app-pop-wrap');
+  document.getElementById('mobile-app-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    appPopWrap.classList.toggle('open');
+    // close other floating panels
+    document.getElementById('notes-panel').classList.remove('open');
+    document.getElementById('jump-panel').classList.remove('open');
+    document.getElementById('user-chip-wrap').classList.remove('open');
+  });
+  document.addEventListener('click', e => {
+    if (appPopWrap.classList.contains('open') && !appPopWrap.contains(e.target)) {
+      appPopWrap.classList.remove('open');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') appPopWrap.classList.remove('open');
+  });
+
+  // ---------- Init ----------
+  validateEmail();
+  updateCodeState();
+  validateProfile();
+  // Default: NO invitations (main flow). Use Jump menu → "Invitations" to test invited perspective.
+</script>
+
+</body>
+</html>
