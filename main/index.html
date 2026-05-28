@@ -147,42 +147,24 @@
   .store-btn {
     margin-top: 10px;
     width: 100%;
+    height: 40px;
     background: var(--ink);
     color: #fff;
     border: none;
     border-radius: 10px;
-    padding: 8px 10px;
-    display: flex; align-items: center; gap: 8px;
+    padding: 0 12px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
     cursor: pointer;
     font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
     transition: background .15s, transform .08s;
   }
   .store-btn:hover { background: var(--primary-hover); }
   .store-btn:active { transform: scale(0.98); }
   .store-btn svg {
-    width: 20px; height: 20px;
+    width: 18px; height: 18px;
     flex-shrink: 0;
-  }
-  .store-btn-text {
-    display: flex; flex-direction: column;
-    align-items: flex-start;
-    line-height: 1.15;
-    text-align: left;
-  }
-  .store-btn .t-small {
-    font-size: 8.5px;
-    font-weight: 400;
-    opacity: 0.85;
-    letter-spacing: 0.1px;
-  }
-  .store-btn .t-big {
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 1px;
-  }
-  .store-google .t-small {
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
   }
 
   /* ---------- User menu dropdown ---------- */
@@ -472,10 +454,9 @@
   }
   .qr-logo .lm { display: block; }
 
-  /* Step list under QR — aligned with QR width, centered together */
+  /* Step list under QR — auto-width, centered together with QR */
   .qr-steps {
     margin-top: 24px;
-    width: 200px;
     display: flex; flex-direction: column;
     gap: 12px;
   }
@@ -484,6 +465,7 @@
     font-size: 13px;
     color: var(--ink);
     line-height: 1.4;
+    white-space: nowrap;
   }
   .qr-step-num {
     width: 22px; height: 22px;
@@ -542,12 +524,16 @@
 
   /* ---------- Back link ---------- */
   .back {
+    position: absolute;
+    top: -48px;
+    left: -12px;
     display: inline-flex; align-items: center; gap: 6px;
     color: var(--ink);
     background: none; border: none; cursor: pointer;
     font-size: 14px; font-family: inherit;
     padding: 8px 12px; border-radius: 8px;
-    margin: 0 0 12px -12px;
+    margin: 0;
+    z-index: 2;
   }
   .back:hover { background: rgba(255,255,255,0.6); }
 
@@ -1231,10 +1217,7 @@
               </div>
               <button class="store-btn store-apple" onclick="toast('Opening App Store…')">
                 <svg viewBox="0 0 24 24" fill="#fff"><path d="M16.365 1.43c0 1.14-.42 2.22-1.13 3.03-.78.9-2.05 1.59-3.07 1.5-.12-1.1.39-2.25 1.06-3 .76-.85 2.07-1.49 3.14-1.53zM20.5 17.34c-.55 1.26-.82 1.82-1.52 2.95-.99 1.58-2.38 3.55-4.11 3.56-1.53.02-1.93-1-4-1-2.07.01-2.5 1.02-4.03 1-1.73-.02-3.05-1.81-4.04-3.4C.66 16.06-.07 10.4 3.05 7.65 4.15 6.71 5.39 6.13 6.69 6.1c1.51-.04 2.93 1.02 3.85 1.02.92 0 2.65-1.26 4.47-1.07.76.03 2.9.31 4.27 2.31-3.78 2.07-3.18 7.45 1.22 8.98z"/></svg>
-                <div class="store-btn-text">
-                  <span class="t-small">Download on the</span>
-                  <span class="t-big">App Store</span>
-                </div>
+                App Store
               </button>
             </div>
             <div class="app-qr-col">
@@ -1246,10 +1229,7 @@
               </div>
               <button class="store-btn store-google" onclick="toast('Opening Google Play…')">
                 <svg viewBox="0 0 24 24"><path fill="#34A853" d="M3 20.5v-17a1 1 0 0 1 1.5-.87L19 11.13a1 1 0 0 1 0 1.74L4.5 21.37A1 1 0 0 1 3 20.5z"/><path fill="#FBBC04" d="M14.5 8.43L19 11.13a1 1 0 0 1 0 1.74l-4.5 2.7L11.4 12z"/><path fill="#EA4335" d="M4.5 2.63L14.5 8.43 11.4 12z" opacity=".9"/><path fill="#4285F4" d="M4.5 21.37L14.5 15.57 11.4 12z" opacity=".9"/></svg>
-                <div class="store-btn-text">
-                  <span class="t-small">Get it on</span>
-                  <span class="t-big">Google Play</span>
-                </div>
+                Google Play
               </button>
             </div>
           </div>
@@ -1363,7 +1343,7 @@
           Back to email
         </button>
 
-        <div class="logo-block" style="margin-top:8px;">
+        <div class="logo-block">
           <svg class="logo-mark" width="62" height="56" viewBox="0 0 48 43" fill="none" aria-hidden="true">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 42.3154V34.7591H0L13.5 42.3154Z" fill="#0050DC"/>
             <path fill-rule="evenodd" clip-rule="evenodd" d="M0 24.1901L48 24.1807L47.9979 34.7596H0V24.1901Z" fill="#2D7AFF"/>
@@ -1411,7 +1391,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:8px; margin-bottom:8px;">
+        <div class="logo-block" style="margin-bottom:8px;">
           <div class="title">Check your email</div>
           <div class="subtitle">
             We sent a 6-digit code to <b id="verify-email" style="color:var(--ink);">you@example.com</b>
@@ -1448,7 +1428,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:8px; margin-bottom:0;">
+        <div class="logo-block" style="margin-bottom:0;">
           <div class="title">Create your profile</div>
           <div class="subtitle">This is how teammates will see you.</div>
         </div>
@@ -1486,7 +1466,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:8px; margin-bottom:22px;">
+        <div class="logo-block" style="margin-bottom:22px;">
           <div class="title">You’ve been invited</div>
           <div class="subtitle"><span id="inv-count">3</span> people invited you to join their workspaces</div>
         </div>
@@ -1543,7 +1523,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:8px; margin-bottom:18px;">
+        <div class="logo-block" style="margin-bottom:18px;">
           <div class="title">Create team</div>
           <div class="subtitle">You’ll be the Owner of this team.</div>
         </div>
@@ -1583,7 +1563,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:8px; margin-bottom:18px;">
+        <div class="logo-block" style="margin-bottom:18px;">
           <div class="title">Join a team</div>
           <div class="subtitle">Use an invite code or browse Community.</div>
         </div>
@@ -1622,7 +1602,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:8px; margin-bottom:18px;">
+        <div class="logo-block" style="margin-bottom:18px;">
           <div class="title">Apply to join</div>
           <div class="subtitle">Tell admins why you’d like to join.</div>
         </div>
