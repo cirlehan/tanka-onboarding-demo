@@ -472,12 +472,12 @@
   }
   .qr-logo .lm { display: block; }
 
-  /* Step list under QR */
+  /* Step list under QR — aligned with QR width, centered together */
   .qr-steps {
     margin-top: 24px;
+    width: 200px;
     display: flex; flex-direction: column;
-    gap: 10px;
-    align-self: stretch;
+    gap: 12px;
   }
   .qr-step {
     display: flex; align-items: center; gap: 12px;
@@ -490,12 +490,12 @@
     border-radius: 50%;
     background: var(--muted-2);
     color: #fff;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    line-height: 1;
   }
-  .qr-step b { font-weight: 600; }
 
   /* ---------- Code input ---------- */
   .code-row {
@@ -1386,20 +1386,20 @@
               </svg>
             </div>
           </div>
-        </div>
 
-        <div class="qr-steps">
-          <div class="qr-step">
-            <span class="qr-step-num">1</span>
-            Open <b>Tanka</b> on your phone
-          </div>
-          <div class="qr-step">
-            <span class="qr-step-num">2</span>
-            Tap <b>Me</b> → <b>Scan QR code</b>
-          </div>
-          <div class="qr-step">
-            <span class="qr-step-num">3</span>
-            Scan this code to sign in
+          <div class="qr-steps">
+            <div class="qr-step">
+              <span class="qr-step-num">1</span>
+              Open Tanka on your phone
+            </div>
+            <div class="qr-step">
+              <span class="qr-step-num">2</span>
+              On Home, tap the menu icon
+            </div>
+            <div class="qr-step">
+              <span class="qr-step-num">3</span>
+              Scan this code to sign in
+            </div>
           </div>
         </div>
       </div>
