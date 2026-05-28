@@ -55,18 +55,9 @@
     cursor: pointer;
   }
   .brand-mark {
-    width: 28px; height: 28px;
-    display: inline-block;
-    position: relative;
+    display: block;
+    flex-shrink: 0;
   }
-  .brand-mark .bar {
-    position: absolute; left: 0; right: 0;
-    height: 7px; border-radius: 3px;
-  }
-  .brand-mark .b1 { top: 2px;  width: 22px; background: #28d17c; }
-  .brand-mark .b2 { top: 11px; width: 28px; background: #2e8bff; }
-  .brand-mark .b3 { top: 20px; width: 18px; background: #2e8bff;
-                    border-bottom-left-radius: 3px; border-bottom-right-radius: 7px; }
 
   .top-right { display: flex; align-items: center; gap: 10px; }
   .pill {
@@ -272,18 +263,9 @@
     margin-bottom: 28px;
   }
   .logo-mark {
-    width: 56px; height: 56px;
-    position: relative;
+    display: block;
     margin-bottom: 14px;
   }
-  .logo-mark .bar {
-    position: absolute; left: 0; right: 0;
-    height: 14px; border-radius: 5px;
-  }
-  .logo-mark .b1 { top: 4px;  width: 44px; background: #28d17c; }
-  .logo-mark .b2 { top: 22px; width: 56px; background: #2e8bff; }
-  .logo-mark .b3 { top: 40px; width: 36px; background: #2e8bff;
-                   border-bottom-left-radius: 6px; border-bottom-right-radius: 13px; }
   .title {
     font-size: 26px; font-weight: 700; letter-spacing: -0.2px;
     text-align: center;
@@ -503,18 +485,7 @@
     box-shadow: 0 0 0 4px #fff;
     display: inline-flex; align-items: center; justify-content: center;
   }
-  .qr-logo .lm {
-    position: relative;
-    width: 26px; height: 26px;
-  }
-  .qr-logo .lm .bar {
-    position: absolute; left: 0; right: 0;
-    height: 6px; border-radius: 2px;
-  }
-  .qr-logo .lm .b1 { top: 1px;  width: 20px; background: #28d17c; }
-  .qr-logo .lm .b2 { top: 10px; width: 26px; background: #2e8bff; }
-  .qr-logo .lm .b3 { top: 19px; width: 17px; background: #2e8bff;
-                     border-bottom-left-radius: 3px; border-bottom-right-radius: 6px; }
+  .qr-logo .lm { display: block; }
 
   /* scan line animation */
   .qr-scan {
@@ -1234,11 +1205,12 @@
   <!-- Top bar -->
   <div class="top-bar">
     <div class="brand" onclick="goto('welcome')">
-      <span class="brand-mark">
-        <span class="bar b1"></span>
-        <span class="bar b2"></span>
-        <span class="bar b3"></span>
-      </span>
+      <svg class="brand-mark" width="32" height="29" viewBox="0 0 48 43" fill="none" aria-hidden="true">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 42.3154V34.7591H0L13.5 42.3154Z" fill="#0050DC"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 24.1901L48 24.1807L47.9979 34.7596H0V24.1901Z" fill="#2D7AFF"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 12.0908H48V22.6697H0V12.0908Z" fill="#00B9E3"/>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H34.5V10.5789H0V0Z" fill="#00DF5D"/>
+      </svg>
       <span id="brand-text">TANKA</span>
     </div>
     <div class="top-right">
@@ -1325,11 +1297,12 @@
           Back to sign in
         </button>
         <div class="logo-block">
-          <div class="logo-mark">
-            <span class="bar b1"></span>
-            <span class="bar b2"></span>
-            <span class="bar b3"></span>
-          </div>
+          <svg class="logo-mark" width="62" height="56" viewBox="0 0 48 43" fill="none" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 42.3154V34.7591H0L13.5 42.3154Z" fill="#0050DC"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 24.1901L48 24.1807L47.9979 34.7596H0V24.1901Z" fill="#2D7AFF"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 12.0908H48V22.6697H0V12.0908Z" fill="#00B9E3"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H34.5V10.5789H0V0Z" fill="#00DF5D"/>
+          </svg>
           <div class="title" id="welcome-title">Welcome to Tanka</div>
           <div class="subtitle" id="welcome-sub">Sign in to continue.</div>
         </div>
@@ -1389,11 +1362,12 @@
         </button>
 
         <div class="logo-block" style="margin-top:8px;">
-          <div class="logo-mark">
-            <span class="bar b1"></span>
-            <span class="bar b2"></span>
-            <span class="bar b3"></span>
-          </div>
+          <svg class="logo-mark" width="62" height="56" viewBox="0 0 48 43" fill="none" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 42.3154V34.7591H0L13.5 42.3154Z" fill="#0050DC"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 24.1901L48 24.1807L47.9979 34.7596H0V24.1901Z" fill="#2D7AFF"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 12.0908H48V22.6697H0V12.0908Z" fill="#00B9E3"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H34.5V10.5789H0V0Z" fill="#00DF5D"/>
+          </svg>
           <div class="title">Sign in with QR code</div>
           <div class="subtitle">Scan with the Tanka mobile app to sign in instantly.</div>
         </div>
@@ -1405,11 +1379,12 @@
             <svg class="qr-svg" id="qr-svg" viewBox="-2 -2 33 33" shape-rendering="crispEdges" aria-label="QR code"></svg>
             <div class="qr-scan"></div>
             <div class="qr-logo">
-              <div class="lm">
-                <span class="bar b1"></span>
-                <span class="bar b2"></span>
-                <span class="bar b3"></span>
-              </div>
+              <svg class="lm" width="28" height="25" viewBox="0 0 48 43" fill="none" aria-hidden="true">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 42.3154V34.7591H0L13.5 42.3154Z" fill="#0050DC"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 24.1901L48 24.1807L47.9979 34.7596H0V24.1901Z" fill="#2D7AFF"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 12.0908H48V22.6697H0V12.0908Z" fill="#00B9E3"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H34.5V10.5789H0V0Z" fill="#00DF5D"/>
+              </svg>
             </div>
           </div>
         </div>
@@ -1430,7 +1405,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:18px; margin-bottom:8px;">
+        <div class="logo-block" style="margin-top:8px; margin-bottom:8px;">
           <div class="title">Check your email</div>
           <div class="subtitle">
             We sent a 6-digit code to <b id="verify-email" style="color:var(--ink);">you@example.com</b>
@@ -1467,7 +1442,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:18px; margin-bottom:0;">
+        <div class="logo-block" style="margin-top:8px; margin-bottom:0;">
           <div class="title">Create your profile</div>
           <div class="subtitle">This is how teammates will see you.</div>
         </div>
@@ -1505,7 +1480,7 @@
           Back
         </button>
 
-        <div class="logo-block" style="margin-top:18px; margin-bottom:22px;">
+        <div class="logo-block" style="margin-top:8px; margin-bottom:22px;">
           <div class="title">You’ve been invited</div>
           <div class="subtitle"><span id="inv-count">3</span> people invited you to join their workspaces</div>
         </div>
