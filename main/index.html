@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Tanka · Onboarding — Main flow</title>
 <style>
   :root {
@@ -240,9 +243,9 @@
   .stage {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 24px 24px 80px;
+    padding: 100px 24px 80px;
   }
   .card {
     width: 100%;
@@ -264,6 +267,15 @@
   .logo-block {
     display: flex; flex-direction: column; align-items: center;
     margin-bottom: 28px;
+    transition: padding-top .35s ease;
+  }
+  /* Logo-less views: simulate the logo's vertical space so the title
+     sits at the same Y as views with a logo (welcome sign-in, QR). */
+  #view-welcome.is-signup .logo-block,
+  #view-verify .logo-block,
+  #view-space .logo-block,
+  #view-invitations .logo-block {
+    padding-top: 57px;
   }
   .logo-mark {
     display: block;
@@ -481,11 +493,15 @@
 
   /* ---------- Code input ---------- */
   .code-row {
-    display: flex; justify-content: center; gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
     margin: 20px 0 8px;
+    width: 100%;
   }
   .code {
-    width: 52px; height: 60px;
+    width: 100%;
+    height: 60px;
     border: 1px solid var(--line);
     border-radius: 12px;
     background: #fff;
@@ -496,6 +512,7 @@
     transition: border-color .15s, box-shadow .15s, transform .1s;
     font-family: inherit;
     caret-color: var(--accent-blue);
+    padding: 0;
   }
   .code:focus {
     border-color: var(--accent-blue);
@@ -525,7 +542,7 @@
   /* ---------- Back link ---------- */
   .back {
     position: absolute;
-    top: -48px;
+    top: -90px;
     left: -12px;
     display: inline-flex; align-items: center; gap: 6px;
     color: var(--ink);
@@ -638,9 +655,10 @@
     border: none; background: transparent; font-family: inherit;
   }
   .tab.active {
-    background: var(--ink);
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(10,15,31,0.2);
+    background: #fff;
+    color: var(--ink);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(10,15,31,0.08), 0 0 0 0.5px rgba(10,15,31,0.04);
   }
 
   /* ---------- Team list (Community) ---------- */
@@ -1139,24 +1157,11 @@
     margin-bottom: 0;
     transform: scale(0.6);
   }
-  #view-welcome.is-signup .or,
-  #view-welcome.is-signup .social-row,
-  #view-welcome.is-signup .qr-link-wrap,
-  #view-welcome.is-signup .signup-line {
+  #view-welcome.is-signup .qr-link-wrap {
     opacity: 0;
     max-height: 0;
     margin: 0;
     pointer-events: none;
-  }
-
-  /* Top "Back to sign in" — visible only in signup mode */
-  .back-to-signin {
-    display: none;
-    margin: 0 0 4px -8px;
-  }
-  #view-welcome.is-signup .back-to-signin {
-    display: inline-flex;
-    animation: fadeUp .3s ease;
   }
 
   /* ---------- Mobile ---------- */
@@ -1181,7 +1186,7 @@
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 12.0908H48V22.6697H0V12.0908Z" fill="#00B9E3"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H34.5V10.5789H0V0Z" fill="#00DF5D"/>
       </svg>
-      <svg id="brand-text" class="brand-text" width="85" height="18" viewBox="0 0 80 17" fill="none" aria-label="Tanka">
+      <svg id="brand-text" class="brand-text" width="56" height="12" viewBox="0 0 80 17" fill="none" aria-label="Tanka">
         <path d="M14.9297 0.435547V2.58496H0.416992V0.435547H14.9297Z" fill="currentColor" stroke="currentColor" stroke-width="0.833333"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M9.00197 0.21875V16.4356H5.96484V0.21875H9.00197Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
         <path d="M34.7227 0.208008H31.6855V16.4248H34.7227V0.208008Z" fill="currentColor" stroke="currentColor" stroke-width="0.416667"/>
@@ -1250,15 +1255,6 @@
             </div>
           </div>
           <div class="user-menu-sep"></div>
-          <button class="user-menu-item" onclick="toast('Account settings coming soon')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 0 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-            Account settings
-          </button>
-          <button class="user-menu-item" onclick="toast('Help center coming soon')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            Help &amp; support
-          </button>
-          <div class="user-menu-sep"></div>
           <button class="user-menu-item is-danger" id="signout-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sign out
@@ -1274,10 +1270,6 @@
 
       <!-- ============ Step 1: Welcome ============ -->
       <div class="view active" id="view-welcome">
-        <button class="back back-to-signin" onclick="setMode('signin')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Back to sign in
-        </button>
         <div class="logo-block">
           <svg class="logo-mark" width="48" height="43" viewBox="0 0 48 43" fill="none" aria-hidden="true">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M13.5 42.3154V34.7591H0L13.5 42.3154Z" fill="#0050DC"/>
@@ -1480,7 +1472,12 @@
             Create a new team
           </button>
           <button class="or-action" onclick="goto('join-team')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="8" r="2.5"/><path d="M16 20a5 5 0 0 1 6-4.9"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.5 19.8001C10.5 16.4495 13.0744 13.7334 16.25 13.7334C19.4256 13.7334 22 16.4495 22 19.8001"/>
+              <path d="M16.26 10.98C14.4706 10.98 13.02 9.5294 13.02 7.74C13.02 5.9506 14.4706 4.5 16.26 4.5C18.0494 4.5 19.5 5.9506 19.5 7.74C19.5 9.5294 18.0494 10.98 16.26 10.98Z"/>
+              <path d="M2 19C2 16 4 14 7 14C7.31523 14 7.70067 14.0283 8 14.0824"/>
+              <path d="M7.4502 11C5.93141 11 4.7002 9.76878 4.7002 8.25C4.7002 6.73122 5.93141 5.5 7.4502 5.5C8.96898 5.5 10.2002 6.73122 10.2002 8.25C10.2002 9.76878 8.96898 11 7.4502 11Z"/>
+            </svg>
             Join existing team
           </button>
         </div>
@@ -1506,7 +1503,12 @@
 
         <div class="choice" onclick="goto('join-team')">
           <div class="choice-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0a0f1f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="8" r="2.5"/><path d="M16 20a5 5 0 0 1 6-4.9"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.5 19.8001C10.5 16.4495 13.0744 13.7334 16.25 13.7334C19.4256 13.7334 22 16.4495 22 19.8001"/>
+              <path d="M16.26 10.98C14.4706 10.98 13.02 9.5294 13.02 7.74C13.02 5.9506 14.4706 4.5 16.26 4.5C18.0494 4.5 19.5 5.9506 19.5 7.74C19.5 9.5294 18.0494 10.98 16.26 10.98Z"/>
+              <path d="M2 19C2 16 4 14 7 14C7.31523 14 7.70067 14.0283 8 14.0824"/>
+              <path d="M7.4502 11C5.93141 11 4.7002 9.76878 4.7002 8.25C4.7002 6.73122 5.93141 5.5 7.4502 5.5C8.96898 5.5 10.2002 6.73122 10.2002 8.25C10.2002 9.76878 8.96898 11 7.4502 11Z"/>
+            </svg>
           </div>
           <div class="choice-body">
             <div class="choice-title">Join an existing team</div>
