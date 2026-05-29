@@ -773,17 +773,21 @@
     flex-shrink: 0;
   }
   .btn-decline {
-    background: transparent;
+    height: 34px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: #F1F5F9;
     border: none;
-    color: var(--muted);
+    color: var(--ink);
     font-size: 13px;
-    padding: 6px 10px;
-    border-radius: 8px;
+    font-weight: 500;
     cursor: pointer;
+    flex-shrink: 0;
     font-family: inherit;
-    transition: color .15s, background .15s;
+    transition: background .15s, transform .08s;
   }
-  .btn-decline:hover { color: var(--ink); background: #f1f5fb; }
+  .btn-decline:hover { background: #E2E9F4; }
+  .btn-decline:active { transform: scale(0.97); }
   .btn-accept {
     height: 34px; padding: 0 18px;
     border-radius: 999px;
