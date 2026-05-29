@@ -21,7 +21,7 @@
     --card: #ffffff;
     --primary: #0a0f1f;
     --primary-hover: #1a2138;
-    --disabled: #b8bcc6;
+    --disabled: rgba(2, 6, 23, 0.5);
     --accent-blue: #2e8bff;
     --accent-green: #20c997;
     --danger: #e5484d;
@@ -349,7 +349,7 @@
   }
   .btn-primary:hover { background: var(--primary-hover); }
   .btn-primary:disabled {
-    background: var(--disabled); color: #fff; cursor: not-allowed; opacity: .8;
+    background: var(--disabled); color: #fff; cursor: not-allowed;
   }
   .btn-primary:disabled:active { transform: none; }
   .btn-secondary {
@@ -576,14 +576,15 @@
     right: -2px; bottom: -2px;
     width: 30px; height: 30px;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    background: var(--accent-blue);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(46, 139, 255, 0.30);
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer;
-    border: 1px solid var(--line);
-    transition: transform .1s;
+    border: 2px solid #fff;
+    transition: transform .1s, background .15s;
   }
-  .avatar-edit:hover { transform: scale(1.05); }
+  .avatar-edit:hover { transform: scale(1.05); background: #1f6feb; }
 
   .row-2 {
     display: grid;
@@ -638,7 +639,7 @@
   .tabs {
     display: inline-flex;
     padding: 4px;
-    background: #eef1f7;
+    background: #E7EAED;
     border-radius: 999px;
     width: 100%;
     max-width: 320px;
@@ -1533,9 +1534,14 @@
         <div class="team-avatar-stage">
           <div class="team-avatar" id="team-avatar">
             <span id="team-avatar-initial" style="display:none;"></span>
-            <svg id="team-avatar-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9aa3b2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 21h18M5 21V7l7-4 7 4v14"/>
-              <path d="M9 9h2M9 13h2M9 17h2M13 9h2M13 13h2M13 17h2"/>
+            <svg id="team-avatar-icon" width="42" height="42" viewBox="0 0 42 42" fill="none" stroke="#8793AB" stroke-width="2.57143" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.8573 34.7138V5.14236C21.8571 4.90968 21.7939 4.68139 21.6742 4.48184C21.5545 4.28229 21.3829 4.11896 21.1777 4.00926C20.9725 3.89957 20.7414 3.84762 20.509 3.85895C20.2765 3.87028 20.0516 3.94447 19.858 4.07361L7.00086 12.6445C6.8245 12.7622 6.67998 12.9216 6.58016 13.1086C6.48034 13.2957 6.42831 13.5045 6.42871 13.7165V34.7138"/>
+              <path d="M21.8574 14.1426H33.4289C33.7698 14.1426 34.0969 14.278 34.338 14.5192C34.5791 14.7603 34.7146 15.0873 34.7146 15.4283V34.714"/>
+              <path d="M2.57129 34.7148H38.5713"/>
+              <path d="M16.7139 18V20.5714"/>
+              <path d="M11.5713 18V20.5714"/>
+              <path d="M11.5713 27V29.5714"/>
+              <path d="M16.7139 27V29.5714"/>
             </svg>
             <label class="avatar-edit" for="team-avatar-upload" title="Upload team icon">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
