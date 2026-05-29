@@ -639,7 +639,7 @@
   .tabs {
     display: inline-flex;
     padding: 4px;
-    background: #E2E9F4;
+    background: #D5DFEF;
     border-radius: 999px;
     width: 100%;
     max-width: 320px;
@@ -670,14 +670,14 @@
     background: #fff;
     border: 1px solid var(--line);
     border-radius: 14px;
-    padding: 6px 12px 6px 8px;
-    display: flex; align-items: center; gap: 10px;
+    padding: 14px;
+    display: flex; align-items: center; gap: 12px;
     transition: border-color .15s, box-shadow .15s;
   }
   .team-row:hover { border-color: var(--line-2); box-shadow: 0 4px 14px rgba(10,15,31,0.04); }
   .t-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
+    width: 42px; height: 42px;
+    border-radius: 12px;
     display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     color: #fff;
@@ -701,24 +701,19 @@
     vertical-align: middle;
   }
   .btn-team {
-    height: 32px;
-    padding: 0 14px;
+    height: 34px;
+    padding: 0 18px;
     border-radius: 999px;
     font-size: 13px; font-weight: 600;
-    border: 1px solid var(--line);
-    background: #fff; color: var(--ink);
+    border: none;
+    background: var(--ink); color: #fff;
     cursor: pointer;
     font-family: inherit;
-    transition: background .15s, border-color .15s;
+    transition: background .15s, transform .08s;
     flex-shrink: 0;
   }
-  .btn-team:hover { background: #f7f9ff; border-color: var(--line-2); }
-  .btn-team.is-apply {
-    background: transparent;
-    color: var(--ink);
-    border-color: var(--line-2);
-  }
-  .btn-team.is-apply:hover { background: rgba(46,139,255,0.06); border-color: var(--accent-blue); color: var(--accent-blue); }
+  .btn-team:hover { background: var(--primary-hover); }
+  .btn-team:active { transform: scale(0.97); }
 
   /* ---------- Invitation cards (compact single-row) ---------- */
   .invite-list {
@@ -729,7 +724,7 @@
     background: #fff;
     border: 1px solid var(--line);
     border-radius: 14px;
-    padding: 12px 14px;
+    padding: 14px;
     display: flex; align-items: center; gap: 12px;
     transition: opacity .25s ease, transform .25s ease, max-height .3s ease, margin .3s ease, padding .3s ease, border-color .15s, box-shadow .15s;
     overflow: hidden;
@@ -2137,7 +2132,7 @@
           <div class="t-title">${t.name}${t.restricted ? ' <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' : ''}</div>
           <div class="t-sub">${t.members} members <span class="dot"></span> ${t.restricted ? 'Restricted' : 'Public'}</div>
         </div>
-        <button class="btn-team ${t.restricted ? 'is-apply' : ''}" data-team="${t.id}">${t.restricted ? 'Apply' : 'Join'}</button>
+        <button class="btn-team" data-team="${t.id}">Join</button>
       </div>
     `).join('');
     root.querySelectorAll('.btn-team').forEach(btn => {
