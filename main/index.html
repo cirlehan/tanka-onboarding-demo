@@ -1458,7 +1458,7 @@
 
         <div class="logo-block">
           <div class="title">You’ve been invited</div>
-          <div class="subtitle"><span id="inv-count">3</span> people invited you to join their workspaces</div>
+          <div class="subtitle">You have <span id="inv-count">3</span> pending team invitations.</div>
         </div>
 
         <div class="invite-list" id="invite-list"></div>
@@ -2194,20 +2194,14 @@
       return;
     }
 
-    const INV_BG = ['linear-gradient(135deg,#ffb24d,#ff7a59)','linear-gradient(135deg,#7b3fff,#2e8bff)','linear-gradient(135deg,#28d17c,#2e8bff)'];
-    root.innerHTML = pending.map((inv, idx) => {
+    root.innerHTML = pending.map(inv => {
       const team = COMMUNITY_TEAMS.find(t => t.id === inv.teamId);
-      const initial = inv.inviter[0];
       return `
         <div class="invite-card" data-inv="${inv.id}">
           <div class="t-icon" style="background:${team.bg};">${team.iconSvg}</div>
           <div class="t-body">
             <div class="t-title">${team.name}</div>
             <div class="t-sub">${team.members} members</div>
-            <div class="t-attr">
-              <span class="by-avatar" style="background:${INV_BG[idx % INV_BG.length]};">${initial}</span>
-              Invited by <b>${inv.inviter}</b>
-            </div>
           </div>
           <div class="invite-actions">
             <button class="btn-decline" data-action="decline" data-inv="${inv.id}">Decline</button>
@@ -2228,14 +2222,14 @@
           inv.status = 'accepted';
           document.getElementById('done-title').textContent = `Joined ${team.name}!`;
           document.getElementById('done-sub').textContent =
-            `${inv.inviter} will be notified. You’re now part of the team.`;
+            `You’re now part of ${team.name}. The team admin will be notified.`;
           goto('done');
         } else {
           // decline: collapse card with animation, then re-render
           inv.status = 'declined';
           card.classList.add('is-leaving');
           setTimeout(() => renderInvitations(), 280);
-          toast(`Declined invite from ${inv.inviter}`);
+          toast(`Declined invitation to ${team.name}`);
         }
       });
     });
