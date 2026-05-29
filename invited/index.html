@@ -291,7 +291,8 @@
     text-align: center;
     color: var(--muted);
     font-size: 14px;
-    margin-top: 8px;
+    margin-top: 14px;
+    line-height: 1.5;
   }
 
   /* ---------- Inputs ---------- */
@@ -317,8 +318,8 @@
   .input::placeholder { color: #c1c6d1; }
   .input:hover { border-color: var(--line-2); }
   .input:focus {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 4px rgba(46,139,255,0.12);
+    border-color: var(--ink);
+    box-shadow: 0 0 0 4px rgba(10,15,31,0.08);
   }
   .input.is-error {
     border-color: var(--danger);
@@ -479,11 +480,11 @@
     white-space: nowrap;
   }
   .qr-step-num {
-    width: 22px; height: 22px;
+    width: 20px; height: 20px;
     border-radius: 50%;
     background: var(--muted-2);
     color: #fff;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     display: inline-flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -514,8 +515,8 @@
     padding: 0;
   }
   .code:focus {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 4px rgba(46,139,255,0.12);
+    border-color: var(--ink);
+    box-shadow: 0 0 0 4px rgba(10,15,31,0.08);
   }
   .code.filled { border-color: var(--ink); }
   .code.is-error {
@@ -928,8 +929,8 @@
     display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
   }
   .tag-input-wrap:focus-within {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 4px rgba(46,139,255,0.12);
+    border-color: var(--ink);
+    box-shadow: 0 0 0 4px rgba(10,15,31,0.08);
   }
   .tag {
     display: inline-flex; align-items: center; gap: 6px;
@@ -1993,7 +1994,7 @@
     }
   });
 
-  // avatar upload
+  // avatar upload (user)
   document.getElementById('avatar-upload').addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -2008,12 +2009,14 @@
         document.getElementById('avatar-initial').style.display = 'none';
       }
       img.src = ev.target.result;
-      // also update small avatar
+      // mirror to the small avatar in top-bar chip
       const sm = document.getElementById('user-avatar');
       sm.textContent = '';
       sm.style.background = `url(${ev.target.result}) center/cover`;
     };
     reader.readAsDataURL(file);
+    // Reset so re-selecting the same file fires `change` again
+    e.target.value = '';
   });
 
   // ---------- Create team ----------
@@ -2045,18 +2048,22 @@
     const reader = new FileReader();
     reader.onload = ev => {
       state.teamAvatarUrl = ev.target.result;
-      teamAvatar.innerHTML = '';
-      const img = document.createElement('img');
+      // Reuse existing <img> if present, else insert before the icon
+      let img = teamAvatar.querySelector('img');
+      if (!img) {
+        img = document.createElement('img');
+        teamAvatar.insertBefore(img, teamAvatar.firstChild);
+      }
       img.src = ev.target.result;
-      teamAvatar.appendChild(img);
-      // re-add edit button
-      const edit = document.createElement('label');
-      edit.className = 'avatar-edit';
-      edit.htmlFor = 'team-avatar-upload';
-      edit.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
-      teamAvatar.appendChild(edit);
+      // Hide placeholder icon + initial; clear gradient bg from name preview
+      document.getElementById('team-avatar-icon').style.display = 'none';
+      document.getElementById('team-avatar-initial').style.display = 'none';
+      teamAvatar.classList.remove('has-name');
+      teamAvatar.style.background = '#fff';
     };
     reader.readAsDataURL(file);
+    // Reset so re-selecting the same file fires `change` again
+    e.target.value = '';
   });
 
   createTeamBtn.addEventListener('click', () => {
