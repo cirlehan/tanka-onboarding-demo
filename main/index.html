@@ -272,8 +272,7 @@
     transition: padding-top .35s ease;
   }
   /* Logo-less views: simulate the logo's vertical space so the title
-     sits at the same Y as views with a logo (welcome sign-in, QR). */
-  #view-welcome.is-signup .logo-block,
+     sits at the same Y as views with a logo (welcome / QR). */
   #view-verify .logo-block,
   #view-space .logo-block,
   #view-invitations .logo-block {
@@ -429,15 +428,12 @@
     text-decoration-color: transparent;
   }
   .qr-link-btn:hover {
-    color: var(--accent-blue);
-    text-decoration-color: var(--accent-blue);
+    text-decoration-color: var(--ink);
   }
   .qr-link-btn svg {
     flex-shrink: 0;
     color: var(--ink);
-    transition: color .15s;
   }
-  .qr-link-btn:hover svg { color: var(--accent-blue); }
 
   /* ---------- QR display ---------- */
   .qr-stage {
@@ -538,7 +534,7 @@
     margin-top: 4px;
     color: var(--muted);
   }
-  .resend-row .link { color: var(--accent-blue); cursor: pointer; font-weight: 500; }
+  .resend-row .link { color: var(--ink); cursor: pointer; font-weight: 600; }
   .resend-row .link[aria-disabled="true"] { color: var(--muted-2); cursor: not-allowed; }
 
   /* ---------- Back link ---------- */
@@ -1125,7 +1121,7 @@
     font-size: 13px;
     color: var(--muted);
   }
-  .reset-row a { color: var(--accent-blue); cursor: pointer; }
+  .reset-row a { color: var(--ink); font-weight: 600; cursor: pointer; }
 
   .terms {
     text-align: center; font-size: 12px;
@@ -1154,12 +1150,6 @@
     overflow: hidden;
   }
 
-  #view-welcome.is-signup .logo-mark {
-    opacity: 0;
-    max-height: 0;
-    margin-bottom: 0;
-    transform: scale(0.6);
-  }
   #view-welcome.is-signup .qr-link-wrap {
     opacity: 0;
     max-height: 0;
@@ -1281,7 +1271,6 @@
             <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H34.5V10.5789H0V0Z" fill="#00DF5D"/>
           </svg>
           <div class="title" id="welcome-title">Welcome to Tanka</div>
-          <div class="subtitle" id="welcome-sub">Sign in to continue.</div>
         </div>
 
         <div class="field" style="margin-top:6px;">
@@ -1801,14 +1790,12 @@
   const COPY = {
     signin: {
       title: 'Welcome to Tanka',
-      sub:   'Sign in to continue.',
       btn:   'Continue',
       prompt:'Don’t have an account?',
       link:  'Sign up',
     },
     signup: {
       title: 'Create your Tanka account',
-      sub:   'Get started — no password required.',
       btn:   'Create account',
       prompt:'Already have an account?',
       link:  'Sign in',
@@ -1818,7 +1805,6 @@
     state.mode = mode;
     const c = COPY[mode];
     document.getElementById('welcome-title').textContent = c.title;
-    document.getElementById('welcome-sub').textContent   = c.sub;
     document.getElementById('continue-label').textContent = c.btn;
     document.getElementById('signup-prompt').textContent = c.prompt;
     document.getElementById('signup-link').textContent   = c.link;
